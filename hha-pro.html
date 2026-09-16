@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#efe8dc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>HHA Pro · Cottage Homecare</title>
+<link rel="icon" href="/icon-128.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root {
+  --bg: #efe8dc;
+  --sidebar: #1a2420;
+  --sidebar-fg: #e8e4d8;
+  --sidebar-muted: #9aa89f;
+  --sidebar-accent: #2a3932;
+  --surface: #fbf8f1;
+  --surface-2: #f3eee4;
+  --ink: #1c1b16;
+  --muted: #6e6b62;
+  --faint: #8a8578;
+  --line: color-mix(in oklab, #1c1b16 10%, transparent);
+  --line-strong: color-mix(in oklab, #1c1b16 14%, transparent);
+  --accent: #2f4a3c;
+  --accent-soft: color-mix(in oklab, #2f4a3c 12%, transparent);
+  --accent-fg: #f4f1ea;
+  --navy: #2c4a6e;
+  --crit: #a24b38;
+  --crit-soft: color-mix(in oklab, #a24b38 14%, transparent);
+  --high: #8a5a22;
+  --high-soft: color-mix(in oklab, #8a5a22 16%, transparent);
+  --ok: #2f5d46;
+  --ok-soft: color-mix(in oklab, #2f5d46 14%, transparent);
+  --shadow: 0 0 0 1px color-mix(in oklab, #1c1b16 8%, transparent), 0 8px 24px -12px color-mix(in oklab, #1c1b16 10%, transparent);
+  --shadow-lg: 0 0 0 1px color-mix(in oklab, #1c1b16 10%, transparent), 0 16px 40px -16px color-mix(in oklab, #1c1b16 18%, transparent);
+  --r: 20px;
+  --sidebar-w: 232px;
+  --font-display: "Fraunces", "Iowan Old Style", Palatino, serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #10140f;
+  --sidebar: #0e100d;
+  --sidebar-fg: #ece8de;
+  --sidebar-muted: #8b938c;
+  --sidebar-accent: #1c221c;
+  --surface: #1a1c18;
+  --surface-2: #22251f;
+  --ink: #f1eee6;
+  --muted: #a3a094;
+  --faint: #8b887c;
+  --line: color-mix(in oklab, #f1eee6 10%, transparent);
+  --line-strong: color-mix(in oklab, #f1eee6 14%, transparent);
+  --accent: #c5d4c8;
+  --accent-soft: color-mix(in oklab, #c5d4c8 16%, transparent);
+  --accent-fg: #1a2420;
+  --navy: #8fb0d0;
+  --crit: #d07a68;
+  --crit-soft: color-mix(in oklab, #d07a68 18%, transparent);
+  --high: #e0b56a;
+  --high-soft: color-mix(in oklab, #e0b56a 18%, transparent);
+  --ok: #8fbfa4;
+  --ok-soft: color-mix(in oklab, #8fbfa4 16%, transparent);
+  --shadow: 0 0 0 1px color-mix(in oklab, #f1eee6 8%, transparent);
+  --shadow-lg: 0 0 0 1px color-mix(in oklab, #f1eee6 12%, transparent), 0 20px 50px -20px rgb(0 0 0 / .55);
+}
+* { box-sizing: border-box; }
+h1, h2, h3, .page-title, .brand-text strong, .kpi .n {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: .2;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.11  0 0 0 0 0.09  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.app, .modal-overlay, .palette-overlay, .sheet-overlay, .pop-stack { position: relative; z-index: 1; }
+.app { z-index: 1; }
+
+html, body {
+  margin: 0; height: 100%;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.011em;
+}
+button, input, select, textarea { font-family: inherit; }
+button { cursor: pointer; }
+::selection { background: var(--accent-soft); }
+.scroll { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+
+.app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100%; }
+.app.collapsed { --sidebar-w: 76px; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh;
+  background: var(--sidebar);
+  color: var(--sidebar-fg);
+  border-right: 1px solid color-mix(in oklab, var(--sidebar-fg) 10%, transparent);
+  display: flex; flex-direction: column; padding: 22px 12px 14px;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; }
+.brand-mark {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--accent-fg); color: var(--accent);
+  display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 600; font-size: 18px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 12%, transparent);
+  flex: 0 0 auto;
+}
+.brand-text { line-height: 1.15; }
+.brand-text strong { display: block; font-size: 14px; font-weight: 650; }
+.brand-text span { font-size: 11px; color: var(--sidebar-muted); }
+.app.collapsed .brand-text, .app.collapsed .nav-label, .app.collapsed .nav-count, .app.collapsed .side-foot-copy { display: none; }
+.app.collapsed .nav-btn { justify-content: center; padding: 10px 0; }
+.nav-sec { font-size: 10px; font-weight: 600; color: var(--sidebar-muted); letter-spacing: .14em; text-transform: uppercase; padding: 16px 10px 6px; }
+.app.collapsed .nav-sec { display: none; }
+.nav-btn {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  border: 0; background: transparent; color: color-mix(in oklab, var(--sidebar-fg) 85%, transparent);
+  padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  text-align: left; transition: background .15s, color .15s;
+}
+.nav-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; flex: 0 0 auto; }
+.nav-btn:hover { background: var(--sidebar-accent); color: var(--sidebar-fg); }
+.nav-btn.on { background: var(--sidebar-accent); color: var(--accent-fg); font-weight: 600; }
+.nav-count {
+  margin-left: auto; font-size: 11px; font-weight: 650;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--muted);
+  min-width: 20px; height: 20px; border-radius: 99px; display: grid; place-items: center; padding: 0 6px;
+}
+.nav-btn.on .nav-count { background: var(--accent-fg); color: var(--accent); border-color: transparent; }
+.side-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid color-mix(in oklab, var(--sidebar-fg) 10%, transparent); }
+.status-pill { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; font-size: 12px; color: var(--sidebar-muted); }
+.dot { width: 6px; height: 6px; border-radius: 99px; background: var(--ok); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ok) 30%, transparent); }
+
+.main { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px 12px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+.page-kicker { font-size: 12px; font-weight: 500; color: var(--muted); }
+.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 550;
+  transition: transform .12s, background .12s;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-ghost { background: transparent; border-color: transparent; }
+.btn-ghost:hover { background: var(--line); }
+.btn-danger { color: var(--crit); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.icon-btn {
+  width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--surface); display: grid; place-items: center; color: var(--ink);
+}
+.icon-btn:hover { background: var(--surface-2); }
+.fld, .fld-mono {
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  border-radius: 10px; padding: 8px 11px; font-size: 13.5px; outline: none;
+}
+.fld-mono { font-variant-numeric: tabular-nums; }
+.fld:focus, .fld-mono:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 0 12px; min-width: 200px; height: 36px;
+}
+.search input { border: 0; outline: none; background: transparent; width: 100%; font-size: 13px; color: var(--ink); }
+.kbd {
+  font-size: 10px; font-weight: 600; color: var(--faint);
+  border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; background: var(--surface-2);
+}
+
+.workspace { display: grid; grid-template-columns: minmax(300px, 440px) 1fr; flex: 1; min-height: 0; }
+.list-pane { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+.detail-pane { min-width: 0; background: var(--surface); }
+.detail-empty { height: 100%; min-height: 52vh; display: grid; place-items: center; text-align: center; padding: 40px; color: var(--muted); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+.section { padding: 22px; }
+.eyebrow { font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 12px; }
+.kpi {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 16px 18px; text-align: left; transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.kpi:hover { transform: translateY(-1px); box-shadow: var(--shadow); border-color: var(--line-strong); }
+.kpi.on { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.kpi .n { font-size: 36px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi .l { margin-top: 6px; font-size: 12.5px; color: var(--muted); font-weight: 500; }
+
+.row, .case-row {
+  display: grid; gap: 10px; align-items: center; padding: 11px 14px;
+  border-bottom: 1px solid var(--line); cursor: pointer;
+}
+.case-row { grid-template-columns: 22px minmax(0,1.5fr) 118px 86px 72px; }
+.row:hover, .case-row:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.row.on, .case-row.on { background: var(--accent-soft); }
+.clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.pill {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 650;
+  padding: 3px 8px; border-radius: 99px; white-space: nowrap;
+}
+.tier-within-7, .pri-medium { background: var(--ok-soft); color: var(--ok); }
+.tier-within-14, .pri-high { background: var(--high-soft); color: #9a5b00; }
+[data-theme="dark"] .tier-within-14, [data-theme="dark"] .pri-high { color: #ffd60a; }
+.tier-over-14, .pri-critical { background: var(--crit-soft); color: var(--crit); }
+.pri-low { background: var(--line); color: var(--muted); }
+.st-screen { background: var(--accent-soft); color: var(--accent); }
+.st-hold { background: var(--high-soft); color: #9a5b00; }
+.st-closed { background: var(--line); color: var(--muted); }
+
+.ntype { font-size: 10.5px; font-weight: 650; padding: 2px 8px; border-radius: 99px; }
+.nt-outreach { background: var(--high-soft); color: #9a5b00; }
+.nt-conversation { background: var(--ok-soft); color: var(--ok); }
+.nt-scheduling { background: var(--accent-soft); color: var(--accent); }
+.nt-documents { background: #f3e8ff; color: #6b3fa0; }
+.nt-intake, .nt-note { background: var(--line); color: var(--muted); }
+
+.dropzone {
+  border: 1.5px dashed var(--line-strong); border-radius: 16px; padding: 22px 20px; text-align: center;
+  background: var(--surface-2); cursor: pointer; transition: .15s;
+}
+.dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+
+.state-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.state-card {
+  position: relative; overflow: hidden; min-height: 148px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  padding: 18px 16px; cursor: pointer; transition: .18s;
+}
+.state-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--line-strong); }
+.state-card .cover { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .2s; }
+.state-card:hover .cover { opacity: .2; }
+.edit-btn {
+  position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 99px;
+  border: 1px solid var(--line); background: var(--surface); z-index: 2;
+}
+.state-initials { position: absolute; right: 10px; bottom: -4px; font-size: 56px; font-weight: 800; color: var(--line); pointer-events: none; }
+
+.modal-overlay, .palette-overlay, .sheet-overlay {
+  position: fixed; inset: 0; z-index: 60; display: none;
+  align-items: flex-start; justify-content: center;
+  background: rgba(0,0,0,.36); padding: 10vh 16px 16px;
+}
+.modal-overlay { align-items: center; padding: 20px; }
+.modal-overlay.show, .palette-overlay.show, .sheet-overlay.show { display: flex; }
+.modal-card, .palette, .sheet {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 18px; box-shadow: var(--shadow-lg); width: min(760px, 100%);
+}
+.palette { width: min(640px, 100%); overflow: hidden; padding: 8px; }
+.sheet { width: min(720px, 100%); padding: 22px; }
+.form-grid, .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-error { color: var(--crit); font-size: 11px; margin-top: 4px; }
+.kanban { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.kanban-col { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-height: 180px; }
+.kanban-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 8px; cursor: pointer; background: var(--surface-2); }
+.kanban-card:hover { border-color: var(--accent); }
+.toast { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-lg); padding: 12px 14px; animation: rise .22s ease; }
+@keyframes rise { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+.login-box { width: min(400px, 100%); margin: 8vh auto; padding: 28px; }
+.note-block { border-top: 1px solid var(--line); padding: 12px 0; }
+.sum-box { background: var(--surface-2); border-radius: 12px; padding: 14px; }
+
+.funnel-row {
+  display: grid; grid-template-columns: minmax(0,1.2fr) minmax(80px,1fr) 48px;
+  gap: 10px; align-items: center; width: 100%; text-align: left;
+  border: 0; background: transparent; padding: 8px 0; color: inherit;
+}
+.funnel-bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.funnel-bar > i { display: block; height: 100%; border-radius: 99px; background: var(--accent); }
+.funnel-bar.lg { height: 10px; }
+.ov-charts {
+  display: grid;
+  grid-template-columns: minmax(0,1.25fr) minmax(280px,.85fr);
+  gap: 16px;
+}
+.ov-tab {
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  border-radius: 999px; padding: 7px 13px; font-size: 13px; font-weight: 550;
+}
+.ov-tab:hover { background: var(--surface-2); }
+.ov-tab.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; font-weight: 650; }
+.state-head {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 12px; font-weight: 650;
+}
+.user-chip { display: flex; align-items: center; gap: 8px; }
+.user-chip .fld { width: 148px; height: 36px; }
+.donut-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.donut-legend { flex: 1; min-width: 140px; }
+@media (max-width: 980px) {
+  .ov-charts { grid-template-columns: 1fr; }
+  .user-chip .eyebrow { display: none; }
+}
+.work-row { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.notify-banner {
+  display: none; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 14px; padding: 12px 14px; margin-bottom: 16px;
+}
+.notify-banner.show { display: flex; }
+.alerts-split {
+  display: grid;
+  grid-template-columns: minmax(0,1.2fr) minmax(300px,.9fr);
+  gap: 16px;
+}
+.alert-item {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border-left: 0; border-right: 0; border-top: 0;
+  color: inherit;
+  border-radius: 0;
+}
+.alert-item:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.rule-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.perm-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  flex-wrap: wrap;
+}
+@media (max-width: 980px) {
+  .alerts-split { grid-template-columns: 1fr; }
+  .alert-item { grid-template-columns: 1fr; }
+}
+.pop-stack {
+  position: fixed; top: 16px; right: 16px; z-index: 80;
+  display: flex; flex-direction: column; gap: 10px; width: min(380px, calc(100vw - 24px));
+  pointer-events: none;
+}
+.pop-alert {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--accent);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 14px 16px;
+  animation: popIn .28s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes popIn { from { transform: translateY(-12px) scale(.96); opacity: 0 } to { transform: none; opacity: 1 } }
+.pop-alert .pop-kicker { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.pop-alert .pop-title { font-size: 15px; font-weight: 650; margin-top: 2px; }
+.pop-alert .pop-body { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.pop-alert .pop-row { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+
+#pipelinePanel, #networkPanel, #overviewPanel, #settingsPanel, #alertsPanel { display: none; }
+#overviewPanel.active, #networkPanel.active, #settingsPanel.active, #alertsPanel.active { display: block; }
+#pipelinePanel.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+
+.gate {
+  position: fixed; inset: 0; z-index: 120;
+  display: none; align-items: center; justify-content: center;
+  padding: 28px 18px;
+  background: var(--bg);
+}
+.gate.show { display: flex; }
+.gate::before {
+  content: "";
+  pointer-events: none;
+  position: absolute; inset: 0;
+  opacity: .22;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.11  0 0 0 0 0.09  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.gate-card {
+  position: relative;
+  width: min(420px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: 34px 30px 28px;
+}
+.gate-mark {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--accent); color: var(--accent-fg);
+  display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 650; font-size: 26px;
+  letter-spacing: -0.04em;
+  margin-bottom: 18px;
+}
+.gate-title {
+  font-family: var(--font-display);
+  font-size: 30px; font-weight: 600;
+  letter-spacing: -0.04em; line-height: 1.1;
+}
+.identity {
+  display: flex; align-items: center; gap: 10px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  max-width: min(280px, 42vw);
+}
+.identity-mark {
+  width: 30px; height: 30px; border-radius: 99px;
+  background: var(--accent); color: var(--accent-fg);
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  font-weight: 650; font-size: 12px; letter-spacing: -0.03em;
+  flex: 0 0 auto;
+}
+.identity-copy { min-width: 0; padding-right: 6px; }
+.identity-name {
+  font-family: var(--font-display);
+  font-size: 14.5px; font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.identity-role { font-size: 10.5px; color: var(--muted); letter-spacing: .01em; }
+
+.hamburger { display: none; }
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; z-index: 40; transform: translateX(-110%); width: 260px; transition: transform .2s; }
+  .app.menu-open .sidebar { transform: none; }
+  .hamburger { display: grid; }
+  .workspace { grid-template-columns: 1fr; }
+  .detail-pane { position: fixed; inset: 0; z-index: 30; display: none; }
+  .detail-pane.open { display: block; }
+  .form-grid, .info-grid { grid-template-columns: 1fr; }
+  .case-row { grid-template-columns: 22px minmax(0,1fr) 72px; }
+  .case-row .hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gate-card">
+    <div class="gate-mark">H</div>
+    <div class="eyebrow mb-2">Cottage Homecare</div>
+    <div class="gate-title" id="gateTitle">Welcome in.</div>
+    <p class="text-[14px] mt-2 mb-5" style="color:var(--muted)">Enter your name once. This device will remember it and use it on notes, actions, and the top bar.</p>
+    <label class="eyebrow block mb-1" for="gateName">Your name</label>
+    <input id="gateName" class="fld w-full mb-4" placeholder="First and last name" autocomplete="name" autofocus>
+    <p id="gateError" class="hidden mb-3 text-[12px]" style="color:var(--crit)">Please enter a name to continue.</p>
+    <button id="btnGateEnter" class="btn btn-primary w-full" style="padding:11px 14px;font-size:14px">Continue to HHA Pro</button>
+    <p class="text-[11px] mt-4" style="color:var(--faint)">Saved only in this browser. You can change the name later in Settings.</p>
+  </div>
+</div>
+<div class="app" id="appShell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">H</div>
+      <div class="brand-text">
+        <strong>HHA Pro</strong>
+        <span>Cottage Homecare</span>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-sec">Workspace</div>
+      <button class="nav-btn on" data-nav="overview" id="nav-overview">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span class="nav-label">Overview</span>
+      </button>
+      <button class="nav-btn" data-nav="pipeline" id="nav-pipeline">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-label">Pipeline</span>
+        <span class="nav-count" id="navCountPipe">0</span>
+      </button>
+      <button class="nav-btn" data-nav="network" id="nav-network">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <span class="nav-label">Network</span>
+      </button>
+      <button class="nav-btn" data-nav="alerts" id="nav-alerts">
+        <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="nav-label">Alerts</span>
+        <span class="nav-count" id="navCountAlerts">0</span>
+      </button>
+      <div class="nav-sec">System</div>
+      <button class="nav-btn" data-nav="settings" id="nav-settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1.1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <span class="nav-label">Settings</span>
+      </button>
+    </nav>
+    <div class="side-foot">
+      <div class="status-pill">
+        <span class="dot" id="connDot"></span>
+        <span class="side-foot-copy" id="connText">Saved locally</span>
+      </div>
+      <div class="status-pill side-foot-copy" id="presence">1 tab</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn hamburger" id="btnMenu" aria-label="Menu">☰</button>
+      <div>
+        <div class="page-kicker" id="pageKicker">Cottage Homecare</div>
+        <div class="page-title" id="pageTitle">Overview</div>
+      </div>
+      <div class="top-actions">
+        <button class="search" id="btnPalette" title="Search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <span style="color:var(--muted);font-size:13px">Search</span>
+          <span class="kbd">⌘K</span>
+        </button>
+        <div class="identity" title="Signed in on this device">
+          <div class="identity-mark" id="idMark">H</div>
+          <div class="identity-copy">
+            <div class="identity-name" id="idName">Guest</div>
+            <div class="identity-role hide-sm">Cottage Homecare</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btnQuickAdd">Log action</button>
+      </div>
+    </header>
+
+    <div id="overviewPanel" class="active section">
+      <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+        <div>
+          <div class="eyebrow" id="ovHello">Cottage Homecare</div>
+          <div class="text-[24px] font-semibold tracking-tight" id="ovStateTitle">Pipeline mix</div>
+        </div>
+        <button class="btn btn-primary" id="ovImport">Import reports</button>
+      </div>
+      <div id="ovStateTabs" class="flex flex-wrap gap-2 mb-4"></div>
+      <div id="ovEmpty" class="hidden">
+        <div id="ovDrop" class="dropzone">
+          <div class="eyebrow mb-1">CSV · Excel · PDF</div>
+          <strong>Drop one or more HHA reports</strong>
+          <div class="text-[12px] mt-1" style="color:var(--muted)">Referrals-by-Status exports split automatically by state. Multiple files at once are fine.</div>
+        </div>
+      </div>
+      <div id="ovDash">
+        <div class="kpi-grid mb-4" id="ovKpis"></div>
+        <div class="ov-charts mb-4">
+          <div class="panel p-5">
+            <div class="eyebrow mb-1">Referral status</div>
+            <div class="text-[15px] font-semibold mb-3" id="ovStatusHead">How many cases sit in each status</div>
+            <div id="ovStatusChart"></div>
+          </div>
+          <div class="panel p-5">
+            <div class="eyebrow mb-3">Touch recency</div>
+            <div id="ovRecencyChart"></div>
+          </div>
+          <div class="panel p-5">
+            <div class="eyebrow mb-3">Intake owners</div>
+            <div id="ovIntakeChart"></div>
+          </div>
+          <div class="panel p-5">
+            <div class="eyebrow mb-3">Referral sources</div>
+            <div id="ovSourceChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pipelinePanel">
+      <div class="section pb-3">
+        <div class="panel p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+            <div>
+              <div class="eyebrow mb-1">Referrals · ranking · actions</div>
+              <div class="text-[17px] font-semibold">One pipeline, split by state</div>
+              <p class="text-[13px] mt-1" style="color:var(--muted)">Drop one or many HHA Exchange reports. Cases group by name, notes stack by date, and each file lands in its state.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btnCrmImport" class="btn btn-primary">Import</button>
+              <button id="btnCrmExport" class="btn">Export</button>
+              <button id="btnPushStale" class="btn">Alert stale</button>
+              <button id="btnCrmClear" class="btn btn-danger">Clear</button>
+            </div>
+          </div>
+          <div id="crmDrop" class="dropzone mb-3">
+            <div class="eyebrow mb-1">CSV · Excel · PDF · multiple files</div>
+            <strong>Drop Referrals-by-Status exports</strong>
+            <div class="text-[12px] mt-1" style="color:var(--muted)">Maryland, New York, and the rest sort themselves. Nested notes flatten on ingest.</div>
+          </div>
+          <div id="crmMapBox" class="hidden mb-3 p-3" style="border:1px dashed var(--line-strong);border-radius:12px">
+            <div class="eyebrow mb-2">Column map</div>
+            <div class="flex flex-wrap gap-3 items-end" id="crmMapFields"></div>
+            <button id="btnCrmMapGo" class="btn btn-primary mt-3">Ingest mapped file</button>
+          </div>
+          <div id="kpiRow" class="flex flex-wrap gap-3"></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 mt-3">
+          <div class="search"><span style="color:var(--muted)">⌕</span><input id="crmQ" placeholder="Search name, note, intake, CHC id…"></div>
+          <select id="crmStatus" class="fld-mono"><option value="all">All statuses</option></select>
+          <select id="crmState" class="fld-mono"><option value="all">All states</option></select>
+          <select id="crmIntake" class="fld-mono"><option value="all">All intake</option></select>
+          <select id="crmAge" class="fld-mono">
+            <option value="all">Any recency</option>
+            <option value="7">0–7 days</option>
+            <option value="14">8–14 days</option>
+            <option value="15">15+ days</option>
+            <option value="none">No note date</option>
+          </select>
+          <select id="crmKind" class="fld-mono">
+            <option value="all">Cases + actions</option>
+            <option value="case">Cases only</option>
+            <option value="task">Actions only</option>
+            <option value="mine">Assigned to me</option>
+          </select>
+          <select id="crmSort" class="fld-mono">
+            <option value="oldest">Oldest first</option>
+            <option value="newest">Newest first</option>
+            <option value="name">Name A–Z</option>
+            <option value="notes">Most notes</option>
+            <option value="due">Due date</option>
+          </select>
+          <div class="flex gap-1">
+            <button id="viewRank" class="btn">Ranked</button>
+            <button id="viewList" class="btn">List</button>
+            <button id="viewBoard" class="btn">Board</button>
+          </div>
+          <span id="crmCount" style="margin-left:auto;font-size:12px;color:var(--muted)"></span>
+        </div>
+      </div>
+      <div class="workspace" style="flex:1;min-height:58vh;border-top:1px solid var(--line)">
+        <div class="list-pane" style="background:var(--surface)">
+          <div id="bulkBar" class="hidden px-3 py-2 flex items-center gap-2" style="border-bottom:1px solid var(--line);background:var(--surface-2)">
+            <span id="bulkCount" class="text-[12px]" style="color:var(--muted)"></span>
+            <select id="bulkStatus" class="fld-mono"><option value="">Set status…</option></select>
+            <button class="btn" id="btnBulkDue">Due today</button>
+            <button class="btn" id="btnBulkClear">Clear selection</button>
+          </div>
+          <div id="crmList" class="scroll" style="flex:1;overflow:auto"></div>
+        </div>
+        <div class="detail-pane" id="caseWrap">
+          <div id="caseDrawer" class="h-full overflow-y-auto scroll"></div>
+        </div>
+      </div>
+      <div id="crmBoard" class="kanban hidden mx-4 mb-4"></div>
+    </div>
+
+    <div id="networkPanel" class="section">
+      <div id="authOverlay">
+        <div class="panel login-box">
+          <div class="eyebrow mb-1">Authorized only</div>
+          <div class="text-[22px] font-semibold mb-1">Network Coverage</div>
+          <p class="text-[13px] mb-4" style="color:var(--muted)">Same gate as the Cottage all-states portal.</p>
+          <label class="eyebrow block mb-1">Email</label>
+          <input id="loginEmail" class="fld w-full mb-3" type="email" placeholder="Email" autocomplete="username">
+          <label class="eyebrow block mb-1">Password</label>
+          <input id="loginPass" class="fld w-full mb-4" type="password" placeholder="Password" autocomplete="current-password">
+          <button id="btnLogin" class="btn btn-primary w-full">Continue</button>
+          <p id="loginError" class="hidden mt-3 text-[12px]" style="color:var(--crit)">Invalid credentials</p>
+        </div>
+      </div>
+      <div id="networkMain" class="hidden">
+        <div class="panel p-4 mb-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="eyebrow mb-1">Riverside Select · DBA Cottage Homecare</div>
+              <div class="text-[18px] font-semibold">Licensed agency directory</div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btnRefreshStates" class="btn">Refresh</button>
+              <button id="btnAddState" class="btn btn-primary">Add state</button>
+              <button id="btnNetLogout" class="btn btn-danger">Sign out</button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 mt-3">
+            <div class="search"><span style="color:var(--muted)">⌕</span><input id="stateQ" placeholder="Search state, agency, NPI, phone…"></div>
+            <select id="regionFilter" class="fld-mono"><option value="all">All regions</option></select>
+            <span id="stateCount" style="margin-left:auto;font-size:12px;color:var(--muted)"></span>
+          </div>
+        </div>
+        <div id="stateLoader" class="panel py-16 text-center" style="color:var(--muted)">Retrieving directory…</div>
+        <div id="stateGrid" class="state-grid"></div>
+      </div>
+    </div>
+
+    <div id="alertsPanel" class="section">
+      <div class="mb-5">
+        <div class="text-[28px] font-semibold tracking-tight">Alerts & Reminders</div>
+        <p class="text-[15px] mt-1" style="color:var(--muted)">Due work, stale screenings, and anything you schedule — an alarm pops in your computer’s notification bar, even if this window is in the background.</p>
+      </div>
+      <div class="panel perm-card mb-4" id="alertPermCard">
+        <div id="alertPermStatus" class="flex items-start gap-3 flex-1 min-w-0"></div>
+        <div class="flex flex-wrap gap-2" style="flex-shrink:0">
+          <button class="btn btn-primary" id="btnNotify2">Enable desktop alarms</button>
+          <button class="btn" id="btnTestNotify">Send test</button>
+          <button class="btn" id="btnClosedTest">Alarm in 8s</button>
+        </div>
+      </div>
+      <div class="kpi-grid mb-4" id="alertKpis"></div>
+      <div class="alerts-split mb-4">
+        <div class="panel p-5">
+          <div class="flex items-center justify-between mb-3 gap-2">
+            <div class="eyebrow">Needs a ping</div>
+            <button class="btn" id="btnAlertStale">Alert all stale</button>
+          </div>
+          <div id="alertQueue"></div>
+        </div>
+        <div class="panel p-5">
+          <div class="eyebrow mb-1">Set a reminder</div>
+          <div class="text-[16px] font-semibold mb-3">When should this fire?</div>
+          <div class="flex flex-col gap-2">
+            <input id="rTitle" class="fld" placeholder="Title — call back, screening, docs…">
+            <div class="form-grid">
+              <input id="rWhen" type="datetime-local" class="fld-mono">
+              <select id="rRepeat" class="fld-mono">
+                <option value="once">Once</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </div>
+            <select id="rLink" class="fld-mono"><option value="">No linked record</option></select>
+            <input id="rBody" class="fld" placeholder="Optional note">
+            <button class="btn btn-primary" id="btnAddReminder">Set reminder</button>
+          </div>
+          <div class="eyebrow mt-5 mb-2">Upcoming</div>
+          <div id="alertReminders"></div>
+        </div>
+      </div>
+      <div class="alerts-split">
+        <div class="panel p-5">
+          <div class="eyebrow mb-1">Auto-alert rules</div>
+          <p class="text-[13px] mb-2" style="color:var(--muted)">These fire as desktop alarms on this computer without you watching the tab.</p>
+          <label class="rule-card">
+            <input type="checkbox" id="optNotifyDue" checked>
+            <div>
+              <div class="text-[14px] font-medium">Due actions</div>
+              <div class="text-[12px]" style="color:var(--muted)">Pipeline actions whose due time has passed.</div>
+            </div>
+          </label>
+          <label class="rule-card">
+            <input type="checkbox" id="optNotifyStale" checked>
+            <div>
+              <div class="text-[14px] font-medium">Stale referrals (14+ days)</div>
+              <div class="text-[12px]" style="color:var(--muted)">Open cases with no note for two weeks. Fires once at day 15.</div>
+            </div>
+          </label>
+          <label class="rule-card" style="border-bottom:0">
+            <input type="checkbox" id="optNotifyBrief" checked>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium">Morning briefing</div>
+              <div class="text-[12px] mb-2" style="color:var(--muted)">One digest of screening, stale, and due counts.</div>
+              <div class="flex items-center gap-2">
+                <label class="eyebrow">Time</label>
+                <input id="optBriefTime" type="time" class="fld-mono" value="08:30">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="panel p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="eyebrow">Recent alerts</div>
+            <button class="btn" id="btnClearAlertLog">Clear log</button>
+          </div>
+          <div id="alertLog"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsPanel" class="section">
+      <div class="panel p-6" style="max-width:680px">
+        <div class="text-[20px] font-semibold mb-4">Settings</div>
+        <div class="mb-5">
+          <div class="eyebrow mb-2">Appearance</div>
+          <div class="flex gap-2">
+            <button class="btn" data-theme-set="system">System</button>
+            <button class="btn" data-theme-set="light">Light</button>
+            <button class="btn" data-theme-set="dark">Dark</button>
+          </div>
+        </div>
+        <div class="mb-5">
+          <div class="eyebrow mb-2">Display name</div>
+          <p class="text-[13px] mb-3" style="color:var(--muted)">Asked once at first open. Change it here if you need to.</p>
+          <div class="flex flex-wrap gap-2">
+            <input id="setName" class="fld" style="min-width:220px;flex:1" placeholder="Your name" autocomplete="name">
+            <button class="btn btn-primary" id="btnSaveName">Save name</button>
+          </div>
+        </div>
+        <div class="mb-5">
+          <div class="eyebrow mb-2">Workspace</div>
+          <label class="flex items-center gap-2 text-[14px] mb-2"><input type="checkbox" id="optCollapse"> Compact sidebar</label>
+          <p class="text-[13px]" style="color:var(--muted)">⌘K search · ⌘N log action · ⌘1–4 modules · J/K move list · / filter</p>
+        </div>
+        <p class="text-[12px]" style="color:var(--faint)">HHA Pro stays in this browser. Export or clear the pipeline from the Pipeline tab. Network Coverage edits and Cloudinary images are the only uploads.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input id="fileInput" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls,.pdf" multiple class="hidden">
+
+<div id="viewModal" class="modal-overlay">
+  <div class="modal-card p-6" id="viewModalContent">
+    <button class="icon-btn" data-net="closeModals" style="position:absolute;top:14px;right:14px">✕</button>
+    <div class="eyebrow" id="viewRegion"></div>
+    <h3 class="text-2xl font-semibold mt-1 mb-4" id="viewTitle"></h3>
+    <div class="info-grid mb-5" id="viewInfo"></div>
+    <div class="flex flex-wrap gap-2">
+      <button id="btnViewEdit" class="btn btn-primary">Edit</button>
+      <button id="btnPushFollowup" class="btn">Create action</button>
+      <button class="btn" data-net="closeModals">Close</button>
+    </div>
+  </div>
+</div>
+<div id="formModal" class="modal-overlay">
+  <div class="modal-card p-6">
+    <button class="icon-btn" data-net="closeModals" style="position:absolute;top:14px;right:14px">✕</button>
+    <div class="eyebrow mb-1">Manage record</div>
+    <h3 class="text-xl font-semibold mb-4" id="formTitle">Add state</h3>
+    <div class="form-grid mb-4">
+      <div><label class="eyebrow block mb-1">State name</label><input class="fld w-full" id="in-name"></div>
+      <div><label class="eyebrow block mb-1">Region</label><input class="fld w-full" id="in-region"></div>
+      <div style="grid-column:1/-1"><label class="eyebrow block mb-1">Agency legal name</label><input class="fld w-full" id="in-agency"></div>
+      <div style="grid-column:1/-1"><label class="eyebrow block mb-1">Address</label><input class="fld w-full" id="in-address"></div>
+      <div><label class="eyebrow block mb-1">NPI</label><input class="fld w-full" id="in-npi"></div>
+      <div><label class="eyebrow block mb-1">Tax ID</label><input class="fld w-full" id="in-tax"></div>
+      <div><label class="eyebrow block mb-1">Medicaid ID</label><input class="fld w-full" id="in-medicaid"></div>
+      <div><label class="eyebrow block mb-1">Provider ID</label><input class="fld w-full" id="in-provider"></div>
+      <div><label class="eyebrow block mb-1">Vendor ID</label><input class="fld w-full" id="in-vendor"></div>
+      <div><label class="eyebrow block mb-1">Lara ID</label><input class="fld w-full" id="in-lara"></div>
+      <div><label class="eyebrow block mb-1">Phone</label><input class="fld w-full" id="in-phone"></div>
+      <div><label class="eyebrow block mb-1">Fax</label><input class="fld w-full" id="in-fax"></div>
+      <div><label class="eyebrow block mb-1">Email</label><input class="fld w-full" id="in-email"></div>
+      <div><label class="eyebrow block mb-1">Pay rate</label><input class="fld w-full" id="in-payrate"></div>
+      <div style="grid-column:1/-1">
+        <label class="eyebrow block mb-1">Cover image</label>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnUploadImg" class="btn">Upload via Cloudinary</button>
+          <span id="imgHint" style="font-size:12px;color:var(--muted)">No image</span>
+        </div>
+        <input type="hidden" id="in-img">
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button id="btnSaveState" class="btn btn-primary">Save</button>
+      <button id="btnDeleteState" class="btn btn-danger">Remove</button>
+      <button class="btn" data-net="closeModals">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="composeSheet" class="sheet-overlay">
+  <div class="sheet">
+    <div class="eyebrow mb-1">Log action</div>
+    <div class="text-[18px] font-semibold mb-4">What needs doing?</div>
+    <div class="flex flex-col gap-2">
+      <input id="fTitle" class="fld" placeholder="Title">
+      <div class="form-grid">
+        <input id="fAssignee" class="fld" placeholder="Assignee">
+        <input id="fPatient" class="fld" placeholder="Patient / account">
+        <select id="fState" class="fld-mono"></select>
+        <input id="fDue" type="datetime-local" class="fld-mono">
+        <select id="fPri" class="fld-mono">
+          <option value="auto">Auto priority</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <input id="fNote" class="fld" placeholder="Opening note">
+      </div>
+      <div class="flex gap-2 mt-2">
+        <button id="btnAdd" class="btn btn-primary">Add to pipeline</button>
+        <button class="btn" id="btnComposeClose">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="palette" class="palette-overlay">
+  <div class="palette">
+    <input id="palQ" class="fld w-full" placeholder="Jump to a module, case, or action…" style="border:0;box-shadow:none;font-size:16px">
+    <div id="palList" class="scroll" style="max-height:50vh;overflow:auto;margin-top:6px"></div>
+  </div>
+</div>
+
+<div id="toasts" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2" style="max-width:360px"></div>
+<div id="popStack" class="pop-stack" aria-live="assertive"></div>
+
+<script>
+const KEY_TASKS = "hha:tasks";
+const KEY_CASES = "hha:cases";
+const KEY_NAME = "hha:name";
+const KEY_TAB = "hha:tab:";
+const KEY_THEME = "hha:theme";
+const KEY_MODE = "hha:mode";
+const KEY_SIDE = "hha:side";
+const KEY_NPREFS = "hha:nprefs";
+const KEY_NFIRED = "hha:nfired";
+const KEY_NBANNER = "hha:nbanner";
+const KEY_REMINDERS = "hha:reminders";
+const KEY_ALERTLOG = "hha:alertlog";
+
+const LS = (() => {
+  try {
+    const probe = "hha:probe";
+    localStorage.setItem(probe, "1");
+    localStorage.removeItem(probe);
+    return { ok: true, api: localStorage };
+  } catch (e) {
+    const mem = new Map();
+    return { ok: false, api: { getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k), key: (i) => [...mem.keys()][i] ?? null, get length() { return mem.size; } } };
+  }
+})();
+
+const uid = () => "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function loadJSON(key, fallback) {
+  try { const p = JSON.parse(LS.api.getItem(key) || "null"); return p && typeof p === "object" ? p : fallback; }
+  catch (e) { return fallback; }
+}
+
+const US = { AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia" };
+const NAME_TO_CODE = Object.fromEntries(Object.entries(US).map(([c, n]) => [n.toLowerCase(), c]));
+const PRI = { critical:{label:"Critical",color:"var(--crit)",rank:0,cls:"pri-critical"}, high:{label:"High",color:"var(--high)",rank:1,cls:"pri-high"}, medium:{label:"Medium",color:"var(--ok)",rank:2,cls:"pri-medium"}, low:{label:"Low",color:"var(--muted)",rank:3,cls:"pri-low"} };
+const CLOSED_RX = /declin|denied|cancel|closed|discharg|lost|not.?admit|withdraw|inactive|complete|admitted|started/i;
+const SCREEN_RX = /initial\s*screen/i;
+const HOLD_RX = /hold|waitlist|pending|wait/i;
+
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+const daysOut = (ms) => Math.round((new Date(ms).setHours(0,0,0,0) - today0()) / 86400000);
+const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString(undefined, { month:"short", day:"numeric" }) : "—";
+const fmtTime = (ms) => ms ? new Date(ms).toLocaleString(undefined, { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" }) : "—";
+const toLocalInput = (ms) => { if (!ms) return ""; const d = new Date(ms - new Date(ms).getTimezoneOffset() * 60000); return d.toISOString().slice(0,16); };
+const isScreening = (s) => SCREEN_RX.test(s || "");
+const isClosed = (s) => CLOSED_RX.test(s || "");
+const statusChip = (s) => isScreening(s) ? "st-screen" : isClosed(s) ? "st-closed" : HOLD_RX.test(s||"") ? "st-hold" : "pri-low";
+
+function resolveState(raw) {
+  if (!raw) return null;
+  const up = String(raw).trim().toUpperCase();
+  if (US[up]) return up;
+  return NAME_TO_CODE[String(raw).trim().toLowerCase()] || null;
+}
+function stateFromText(text = "", allowCodes = false) {
+  const lower = text.toLowerCase();
+  for (const [name, code] of Object.entries(NAME_TO_CODE)) if (lower.includes(name)) return code;
+  if (!allowCodes) return null;
+  for (const chunk of text.toUpperCase().match(/(?:^|[^A-Z])([A-Z]{2})(?:[^A-Z]|$)/g) || []) {
+    const code = chunk.replace(/[^A-Z]/g, "");
+    if (US[code]) return code;
+  }
+  return null;
+}
+
+function parseCSV(text) {
+  const delim = text.indexOf("\t") > -1 && text.indexOf(",") === -1 ? "\t" : ",";
+  const rows = []; let row = [], cur = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"') { if (text[i+1] === '"') { cur += '"'; i++; } else quoted = false; }
+      else cur += c;
+    } else if (c === '"') quoted = true;
+    else if (c === delim) { row.push(cur); cur = ""; }
+    else if (c === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; }
+    else if (c !== "\r") cur += c;
+  }
+  if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+  return rows.filter((r) => r.some((v) => String(v).trim() !== ""));
+}
+const toCSV = (rows) => rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+const normKey = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+function parseLooseDate(v) {
+  if (v == null || v === "") return null;
+  if (v instanceof Date && !isNaN(v)) return v.getTime();
+  const s = String(v).trim();
+  const m = s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if (m) {
+    const y = m[3].length === 2 ? "20"+m[3] : m[3];
+    const d = new Date(+y, +m[1]-1, +m[2], m[4] !== undefined ? +m[4] : 17, m[5] !== undefined ? +m[5] : 0, m[6] !== undefined ? +m[6] : 0);
+    if (!isNaN(d)) return d.getTime();
+  }
+  const d2 = new Date(s);
+  return isNaN(d2) ? null : d2.getTime();
+}
+
+let TASKS = loadJSON(KEY_TASKS, {});
+let CASES = loadJSON(KEY_CASES, {});
+let REMINDERS = loadJSON(KEY_REMINDERS, {});
+if (!REMINDERS || Array.isArray(REMINDERS)) REMINDERS = {};
+let now = Date.now();
+let openItem = null;
+let seeded = false;
+const fired = new Set(loadJSON(KEY_NFIRED, []));
+let me = { uid: "local", name: LS.api.getItem(KEY_NAME) || "" };
+const TAB_ID = KEY_TAB + Math.random().toString(36).slice(2, 9);
+const selected = new Set();
+const pipeFilters = { q: "", status: "all", state: "all", intake: "all", age: "all", kind: "all", sort: "oldest", kpi: null, view: "rank" };
+let ovState = "all";
+let nprefs = Object.assign({ due: true, stale: true, brief: true, briefTime: "08:30" }, loadJSON(KEY_NPREFS, {}));
+let pendingMap = null;
+let swReg = null;
+
+function persistFired() {
+  try { LS.api.setItem(KEY_NFIRED, JSON.stringify([...fired].slice(-400))); } catch (e) {}
+}
+function savePrefs() {
+  try { LS.api.setItem(KEY_NPREFS, JSON.stringify(nprefs)); } catch (e) {}
+  const al = document.getElementById("navCountAlerts");
+  if (al) al.textContent = alertsBadgeCount();
+}
+
+function toast(title, body, tone = "info", action) {
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.style.borderLeft = `3px solid ${tone === "alert" ? "var(--crit)" : "var(--ok)"}`;
+  el.innerHTML = `<div class="flex items-start gap-2">
+    <div class="flex-1"><div class="text-[13px] font-semibold">${esc(title)}</div>
+    <div class="text-[12px] mt-0.5" style="color:var(--muted)">${esc(body || "")}</div></div>
+    ${action ? `<button class="btn" data-undo>Undo</button>` : `<button class="text-[12px]" style="color:var(--muted)">✕</button>`}
+  </div>`;
+  el.querySelector("button").onclick = () => { if (action) action(); el.remove(); };
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(() => el.remove(), action ? 8000 : 4500);
+}
+
+function commitTasks(mutator, okMsg) {
+  const before = JSON.stringify(TASKS);
+  try { mutator(TASKS); LS.api.setItem(KEY_TASKS, JSON.stringify(TASKS)); }
+  catch (e) { TASKS = JSON.parse(before); toast(e.name === "QuotaExceededError" ? "Storage full" : "Could not save", e.message, "alert"); return false; }
+  renderAll(); if (okMsg) toast(okMsg[0], okMsg[1]); return true;
+}
+function commitCases(mutator, okMsg) {
+  const before = JSON.stringify(CASES);
+  try { mutator(CASES); LS.api.setItem(KEY_CASES, JSON.stringify(CASES)); }
+  catch (e) { CASES = JSON.parse(before); toast("Could not save cases", e.message, "alert"); return false; }
+  renderAll(); if (okMsg) toast(okMsg[0], okMsg[1]); return true;
+}
+function commitReminders(mutator, okMsg) {
+  const before = JSON.stringify(REMINDERS);
+  try { mutator(REMINDERS); LS.api.setItem(KEY_REMINDERS, JSON.stringify(REMINDERS)); }
+  catch (e) { REMINDERS = JSON.parse(before); toast("Could not save reminders", e.message, "alert"); return false; }
+  syncAlarmsToSW();
+  renderAll(); if (okMsg) toast(okMsg[0], okMsg[1]); return true;
+}
+function loadAlertLog() {
+  const p = loadJSON(KEY_ALERTLOG, []);
+  return Array.isArray(p) ? p : [];
+}
+function logAlert(title, body, tag, itemKey) {
+  try {
+    const arr = loadAlertLog();
+    arr.unshift({ id: uid(), title, body: body || "", tag: tag || "", itemKey: itemKey || "", at: Date.now() });
+    LS.api.setItem(KEY_ALERTLOG, JSON.stringify(arr.slice(0, 60)));
+  } catch (e) {}
+}
+function defaultReminderWhen() {
+  const d = new Date(Date.now() + 3600000);
+  d.setMinutes(0, 0, 0);
+  return toLocalInput(d.getTime());
+}
+function reminderRows() {
+  return Object.values(REMINDERS).filter((r) => r && r.status !== "done");
+}
+function alertsBadgeCount() {
+  const st = pipelineStats();
+  const rem = reminderRows().filter((r) => r.at && daysOut(r.at) <= 0).length;
+  return st.overdue + st.stale + rem;
+}
+
+const CRM_ALIASES = {
+  srno:["srno","sr","caseno","casenumber","referralid","referralno","refno"],
+  name:["referralname","patientname","clientname","name","patient","client","member"],
+  branch:["branch","office","location","market"], state:["state","st","region"],
+  received:["receiveddate","referraldate","createddate","startdate"],
+  intake:["intakeperson","intake","coordinator","owner"], manager:["accountmanager","am","manager"],
+  source:["referralsource","source"], sourcecontact:["referralsourcecontact","sourcecontact"],
+  submitted:["submittedto"], status:["referralstatus","status","stage","pipeline"],
+  reason:["referralreason","reason"], notedate:["notedate","notedatetime","activitydate","date"],
+  author:["author","username","user","createdby","enteredby"], note:["note","notes","notetext","description","comment","activity"],
+  notetype:["notetype","activitytype","type"],
+};
+const TASK_ALIASES = {
+  title: ["issue","exception","exceptionreason","reason","task","description","problem","visitstatus","denialreason","note"],
+  patient: ["patient","patientname","member","client","clientname","consumer","recipient"],
+  assignee: ["assignee","owner","caregiver","aide","employee","coordinator","worker","staff","responsible"],
+  due: ["duedate","visitdate","servicedate","date","scheduleddate","dos","dateofservice","startdate"],
+  state: ["state","region","office","location","market","branch","territory","st"],
+  ref: ["visitid","id","recordid","admissionid","patientid","confirmationnumber","claimid","ref"],
+};
+function mapHeaders(headers, aliases) {
+  const map = {};
+  headers.forEach((h, i) => {
+    const n = normKey(h);
+    for (const [canon, list] of Object.entries(aliases)) {
+      if (map[canon] !== undefined) continue;
+      if (list.some((a) => n === a || (a.length >= 4 && n.includes(a)))) { map[canon] = i; break; }
+    }
+  });
+  return map;
+}
+
+const MD_HINT = /maryland|\bmd\b|baltimore|prince george|pg county|montgomery county|anne arundel|harford county|howard county|catonsville|dundalk|glen burnie|reisterstown|bowie|columbia,\s*md|fort washington|silver spring|rockville/i;
+function inferState(branch, state, blob) {
+  const fromState = resolveState(state) || resolveState(branch); if (fromState) return fromState;
+  const fromShort = stateFromText(`${branch||""} ${state||""}`, true); if (fromShort) return fromShort;
+  const fromName = stateFromText(blob || ""); if (fromName) return fromName;
+  if (MD_HINT.test(blob||"")) return "MD"; return null;
+}
+function stateLabel(code) {
+  if (!code || code === "GENERAL") return "Unmapped";
+  return US[code] || code;
+}
+function stateSortKey(code) {
+  if (!code || code === "GENERAL") return "zzz";
+  return US[code] || code;
+}
+function groupByState(rows) {
+  const map = new Map();
+  rows.forEach((c) => {
+    const k = c.state || "GENERAL";
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push(c);
+  });
+  return [...map.entries()].sort((a, b) => stateSortKey(a[0]).localeCompare(stateSortKey(b[0])));
+}
+function statusColor(name) {
+  if (isScreening(name)) return "var(--accent)";
+  if (isClosed(name)) return "var(--muted)";
+  if (HOLD_RX.test(name || "")) return "var(--high)";
+  return "var(--navy)";
+}
+function classifyNote(text) {
+  const t = String(text||"");
+  if (/as per |new pt|new patient|_rs:/i.test(t)) return "Intake";
+  const fail = /no ans|no answer|no response|left a vm|left vm|voice mail|voicemail|\bvm\b|left a text|unreachable|not going thru|hung up|mailbox is full|vm full/i.test(t);
+  const spoke = /spoke with|spoke wiht|connected with|connected him|connected her|member replied|informed that/i.test(t);
+  if (fail && !spoke) return "Outreach"; if (spoke) return "Conversation";
+  if (/schedul|appointment|aers|level 1|lvl 1|screening is/i.test(t)) return "Scheduling";
+  if (/\b(ssn|ssal|medicaid|passport|mortgage|bank statement|document list|drivers license)\b/i.test(t)) return "Documents";
+  return "Note";
+}
+function ntypeClass(t) { return ({ Outreach:"nt-outreach", Conversation:"nt-conversation", Scheduling:"nt-scheduling", Documents:"nt-documents", Intake:"nt-intake" }[t]) || "nt-note"; }
+function caseKey(name, srno) { return (String(name||"").trim().toUpperCase().replace(/\s+/g," ") + "||" + String(srno||"").trim()); }
+function extractCaseIds(text) { return [...new Set(String(text||"").match(/CHC[-\s]?\d{5,}/gi)||[])].map((s)=>s.replace(/\s+/g,"").toUpperCase()); }
+function daysOldOf(ms) { if (!ms) return null; return Math.floor((today0() - new Date(ms).setHours(0,0,0,0))/86400000); }
+function recencyLabel(days) { if (days == null || isNaN(days)) return "Needs Attention"; if (days <= 7) return "This Week"; if (days <= 14) return "More than a Week"; return "Needs Attention"; }
+function recencyClass(days) { if (days == null || isNaN(days) || days > 14) return "tier-over-14"; if (days <= 7) return "tier-within-7"; return "tier-within-14"; }
+function clipText(s,n) { const t = String(s||"").replace(/\s+/g," ").trim(); return t.length<=n?t:t.slice(0,n).trim()+"…"; }
+
+function summarizeCase(c) {
+  const notes = (c.notes||[]).slice().sort((a,b)=>(a.at||0)-(b.at||0));
+  if (!notes.length) return { headline:"No notes imported.", bullets:[], last:null, days:null, types:{}, next:"Log first contact." };
+  const last = notes[notes.length-1]; const days = daysOldOf(last.at); const types = {};
+  notes.forEach((n)=>{ types[n.type]=(types[n.type]||0)+1; });
+  const recent = notes.slice(-8); const outreach = recent.filter((n)=>n.type==="Outreach").length;
+  const bullets = [`Last ${last.type.toLowerCase()} on ${fmtTime(last.at)} by ${last.author||"unknown"}.`];
+  if (outreach>=3) bullets.push(`${outreach} of the last ${recent.length} notes are unanswered outreach.`);
+  const spoke = [...notes].reverse().find((n)=>n.type==="Conversation");
+  if (spoke && spoke.id !== last.id) bullets.push(`Last live conversation: ${fmtDate(spoke.at)} — ${clipText(spoke.text,140)}`);
+  if (c.status) bullets.push("Pipeline status: " + c.status + (c.reason?` (${c.reason})`:"") + ".");
+  const ids = extractCaseIds(notes.map((n)=>n.text).join(" ")); if (ids.length) bullets.push("Linked IDs: "+ids.join(", ")+".");
+  return { headline: clipText(last.text,220), bullets, last, days, types, next: nextAction(c,last,days,outreach) };
+}
+function nextAction(c, last, days, outreach) {
+  if (!last) return "Import notes or log first contact.";
+  if (isScreening(c.status) && (days==null || days>=3)) return "Initial screening — call or text today.";
+  if (last.type==="Outreach" && outreach>=2) return "Try another number or text — last calls missed.";
+  if ((days||0)>=14) return "Overdue follow-up — no note in 14+ days.";
+  if ((days||0)>=7) return "Weekly check-in is due.";
+  if (/wait|hold|waitlist|insufficient staff/i.test(last.text)) return "Hold reminder — recheck county / AERS.";
+  if (last.type==="Scheduling") return "Send a reminder before the screening.";
+  if (last.type==="Documents") return "Confirm documents posted.";
+  return "Continue weekly touch until the next pipeline move.";
+}
+
+function hydrateCase(c) {
+  const notes = (c.notes||[]).slice().sort((a,b)=>(a.at||0)-(b.at||0));
+  const last = notes[notes.length-1] || null;
+  const days = last ? daysOldOf(last.at) : (c.lastNoteAt ? daysOldOf(c.lastNoteAt) : null);
+  return { kind:"case", ...c, notes, last, days, priLabel: recencyLabel(days), priClass: recencyClass(days), displayName: c.name };
+}
+function hydrateTask(id, raw) {
+  const notes = raw.notes ? Object.entries(raw.notes).map(([nid, n]) => ({ id: nid, ...n })).sort((a,b) => a.at - b.at) : [];
+  const days = raw.due ? -daysOut(raw.due) : (notes.length ? daysOldOf(notes[notes.length-1].at) : null);
+  const overdue = raw.due && raw.status !== "Resolved" && raw.due <= now;
+  return {
+    kind:"task", id, ...raw, notes, days,
+    displayName: raw.title, status: raw.status || "Open",
+    intake: raw.assignee || "",
+    priLabel: overdue ? "Overdue" : recencyLabel(days),
+    priClass: overdue ? "tier-over-14" : recencyClass(days)
+  };
+}
+function itemList() {
+  const cases = Object.values(CASES).map(hydrateCase);
+  const tasks = Object.entries(TASKS).map(([id, raw]) => hydrateTask(id, raw));
+  return [...cases, ...tasks];
+}
+function visibleItems() {
+  const term = pipeFilters.q.trim().toLowerCase();
+  const mine = (me.name || "").trim().toLowerCase();
+  let rows = itemList()
+    .filter((c) => pipeFilters.kind === "all" ? true : pipeFilters.kind === "mine" ? (c.intake||"").toLowerCase() === mine && !!mine : c.kind === pipeFilters.kind)
+    .filter((c) => pipeFilters.status === "all" ? true : pipeFilters.status === "__screen__" ? isScreening(c.status) : pipeFilters.status === "__other__" ? !isScreening(c.status) && !isClosed(c.status) : (c.status||"") === pipeFilters.status)
+    .filter((c) => pipeFilters.intake === "all" ? true : c.intake === pipeFilters.intake)
+    .filter((c) => pipeFilters.state === "all" ? true : (c.state || "GENERAL") === pipeFilters.state)
+    .filter((c) => {
+      if (pipeFilters.age === "all") return true;
+      if (pipeFilters.age === "none") return c.days == null;
+      if (pipeFilters.age === "7") return c.days != null && c.days <= 7;
+      if (pipeFilters.age === "14") return c.days != null && c.days > 7 && c.days <= 14;
+      return c.days == null || c.days > 14;
+    })
+    .filter((c) => {
+      if (pipeFilters.kpi === "stale") return c.days == null || c.days > 14;
+      if (pipeFilters.kpi === "week") return c.days != null && c.days <= 7;
+      if (pipeFilters.kpi === "screen") return isScreening(c.status);
+      if (pipeFilters.kpi && pipeFilters.kpi.startsWith("st:")) return c.status === pipeFilters.kpi.slice(3);
+      return true;
+    })
+    .filter((c) => !term ? true : `${c.displayName} ${c.name||""} ${c.title||""} ${c.intake||""} ${c.source||""} ${c.status||""} ${(c.ids||[]).join(" ")} ${(c.notes||[]).map((n)=>n.text).join(" ")}`.toLowerCase().includes(term));
+  const s = pipeFilters.sort;
+  rows.sort((a,b) => {
+    if (s === "name") return String(a.displayName).localeCompare(String(b.displayName));
+    if (s === "notes") return (b.notes||[]).length - (a.notes||[]).length;
+    if (s === "newest") return (b.lastNoteAt || b.updatedAt || 0) - (a.lastNoteAt || a.updatedAt || 0);
+    if (s === "due") return (a.due || 9e15) - (b.due || 9e15);
+    return (b.days == null ? 1e9 : b.days) - (a.days == null ? 1e9 : a.days);
+  });
+  return rows;
+}
+
+function pipelineStats() {
+  const cases = Object.values(CASES).map(hydrateCase);
+  const tasks = Object.entries(TASKS).map(([id, raw]) => hydrateTask(id, raw));
+  const statuses = {};
+  cases.forEach((c) => { const k = c.status || "Unknown"; statuses[k] = (statuses[k] || 0) + 1; });
+  const screening = cases.filter((c) => isScreening(c.status)).length;
+  const otherOpen = cases.filter((c) => !isScreening(c.status) && !isClosed(c.status)).length;
+  const closed = cases.filter((c) => isClosed(c.status)).length;
+  const stale = cases.filter((c) => !isClosed(c.status) && (c.days == null || c.days > 14)).length;
+  const week = cases.filter((c) => c.days != null && c.days <= 7).length;
+  const overdue = tasks.filter((t) => t.status !== "Resolved" && t.due && t.due <= now).length;
+  const openTasks = tasks.filter((t) => t.status !== "Resolved").length;
+  const attention = screening + stale + overdue;
+  return { cases, tasks, statuses, screening, otherOpen, closed, stale, week, overdue, openTasks, attention, total: cases.length };
+}
+
+function mapCrmHeaders(headers) { return mapHeaders(headers, CRM_ALIASES); }
+function looksLikeCrm(headers) { const m = mapCrmHeaders(headers); return m.name !== undefined && (m.note !== undefined || m.status !== undefined); }
+function rowsToCases(headers, rows, meta={}) {
+  const hm = mapCrmHeaders(headers); if (hm.name===undefined) throw new Error("No name / referral column found.");
+  const pick = (r,k) => hm[k]===undefined ? "" : String(r[hm[k]]??"").trim();
+  const grouped = new Map();
+  rows.forEach((r, idx) => {
+    const name = pick(r,"name"); if (!name) return;
+    const srno = pick(r,"srno"); const key = caseKey(name, srno);
+    const noteText = pick(r,"note"); const author = pick(r,"author");
+    const noteType = pick(r,"notetype") || classifyNote(noteText);
+    const at = parseLooseDate(pick(r,"notedate")) || parseLooseDate(pick(r,"received"));
+    const rec = grouped.get(key) || { id:key, srno, name, branch:pick(r,"branch"), stateRaw:pick(r,"state"), received:parseLooseDate(pick(r,"received")), intake:pick(r,"intake"), manager:pick(r,"manager"), source:pick(r,"source"), sourceContact:pick(r,"sourcecontact"), submittedTo:pick(r,"submitted"), status:pick(r,"status")||"Open", reason:pick(r,"reason"), notes:[], sourceFile:meta.file||"", updatedAt:Date.now() };
+    if (pick(r,"status")) rec.status = pick(r,"status");
+    if (pick(r,"intake")) rec.intake = pick(r,"intake");
+    if (pick(r,"branch")) rec.branch = pick(r,"branch");
+    if (noteText) { const sig = `${at||""}|${author}|${noteText}`; if (!rec.notes.some((n)=>`${n.at||""}|${n.author}|${n.text}`===sig)) rec.notes.push({ id:uid(), at, author, type:noteType, text:noteText, row:idx }); }
+    grouped.set(key, rec);
+  });
+  grouped.forEach((c) => {
+    c.notes.sort((a,b)=>(a.at||0)-(b.at||0));
+    const blob = `${c.branch} ${c.stateRaw} ` + c.notes.map((n)=>n.text).join(" ");
+    c.state = inferState(c.branch, c.stateRaw, "") || meta.defaultState || inferState("", "", blob) || "GENERAL"; c.ids = extractCaseIds(blob);
+    const last = c.notes[c.notes.length-1]; c.lastNoteAt = last ? last.at : c.received || null;
+  });
+  return [...grouped.values()];
+}
+function mergeCases(incoming, opts={}) {
+  let added=0, notes=0, updated=0;
+  commitCases((db) => {
+    incoming.forEach((c) => {
+      const prev = db[c.id];
+      if (!prev) { db[c.id]=c; added+=1; notes+=c.notes.length; return; }
+      const have = new Set((prev.notes||[]).map((n)=>`${n.at||""}|${n.author}|${n.text}`)); let extra=0;
+      c.notes.forEach((n) => { const sig=`${n.at||""}|${n.author}|${n.text}`; if (!have.has(sig)) { prev.notes = prev.notes || []; prev.notes.push(n); extra+=1; } });
+      prev.notes.sort((a,b)=>(a.at||0)-(b.at||0));
+      prev.status=c.status||prev.status; prev.intake=c.intake||prev.intake; prev.manager=c.manager||prev.manager; prev.source=c.source||prev.source; prev.branch=c.branch||prev.branch; prev.reason=c.reason||prev.reason;
+      const blob = `${prev.branch} ` + prev.notes.map((n)=>n.text).join(" ");
+      prev.state = inferState(prev.branch, prev.stateRaw || prev.state, "") || c.state || prev.state || "GENERAL"; prev.ids = extractCaseIds(blob);
+      const last = prev.notes[prev.notes.length-1]; prev.lastNoteAt = last ? last.at : prev.lastNoteAt; prev.updatedAt = Date.now();
+      notes += extra; if (extra) updated += 1;
+    });
+  }, opts.quiet ? null : ["Report ingested", `${added} new · ${notes} notes · ${updated} updated`]);
+  const screen = incoming.filter((c) => isScreening(c.status)).length;
+  if (screen && !opts.quiet) notifyOS("Initial Screening", `${screen} referral${screen===1?"":"s"} in Initial Screening after import.`, "import-screen");
+  return { added, notes, updated };
+}
+
+async function fileToTable(file) {
+  const name = (file.name||"").toLowerCase();
+  if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
+    if (!window.XLSX) throw new Error("Excel library did not load.");
+    const buf = await file.arrayBuffer(); const wb = XLSX.read(buf, { type:"array", cellDates:true });
+    return workbookToTable(wb, file.name);
+  }
+  if (name.endsWith(".pdf")) return await pdfToTable(file);
+  const text = await file.text(); const parsed = parseCSV(text);
+  if (parsed.length<2) throw new Error("File needs a header and a row.");
+  const table = normalizeTable(parsed, file.name);
+  table.defaultState = inferState("", "", file.name + " " + parsed[0].join(" ")) || stateFromText(file.name);
+  return table;
+}
+function workbookToTable(wb, fileName) {
+  const blobs = [fileName];
+  wb.SheetNames.forEach((name) => {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header:1, raw:false, defval:"" });
+    blobs.push(name, rows.flat().slice(0, 80).join(" "));
+  });
+  const defaultState = inferState("", "", blobs.join(" ")) || stateFromText(fileName);
+  let best = null, bestScore = -1;
+  wb.SheetNames.forEach((name) => {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header:1, raw:false, defval:"" }).map((r) => (r || []).map((c) => c == null ? "" : c));
+    const hasName = rows.some((r) => r.some((c) => /referral\s*name/i.test(String(c))));
+    if (!hasName) return;
+    const score = (/detail/i.test(name) ? 10000 : 0) + rows.length;
+    if (score > bestScore) { bestScore = score; best = rows; }
+  });
+  if (!best) {
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header:1, raw:false, defval:"" });
+    if (rows.length < 2) throw new Error("Spreadsheet is empty.");
+    const table = normalizeTable(rows, fileName);
+    table.defaultState = defaultState;
+    return table;
+  }
+  const table = isHhaNested(best) ? flattenHhaDetail(best) : normalizeTable(best, fileName);
+  table.defaultState = defaultState;
+  table.file = fileName;
+  return table;
+}
+function normalizeTable(rows, fileName) {
+  const hi = Math.max(0, rows.findIndex((r) => (r || []).some((c) => /referral\s*name/i.test(String(c)))));
+  const headers = (rows[hi] || []).map((h) => String(h ?? ""));
+  const body = rows.slice(hi + 1).filter((r) => (r || []).some((v) => String(v ?? "").trim() !== ""));
+  if (headers.length < 2 || body.length < 1) throw new Error((fileName || "File") + " needs a header and a row.");
+  return { headers, rows: body };
+}
+function isHhaNested(rows) {
+  const hasName = (rows || []).some((r) => (r || []).some((c) => /referral\s*name/i.test(String(c))));
+  const hasNote = (rows || []).some((r) => (r || []).some((c) => /^note\s*date$/i.test(String(c).trim())));
+  return hasName && hasNote;
+}
+function colIndex(header, names) {
+  const i = header.findIndex((h) => names.some((n) => normKey(h) === n || (n.length > 3 && normKey(h).includes(n))));
+  return i;
+}
+function flattenHhaDetail(rows) {
+  const hi = rows.findIndex((r) => (r || []).some((c) => /referral\s*name/i.test(String(c))));
+  const head = (rows[Math.max(0, hi)] || []).map((h) => String(h ?? "").trim());
+  const iSr = colIndex(head, ["srno","sr"]);
+  const iName = colIndex(head, ["referralname","name"]);
+  const iBranch = colIndex(head, ["branch"]);
+  const iRecv = colIndex(head, ["receiveddate","received"]);
+  const iIntake = colIndex(head, ["intakeperson","intake"]);
+  const iMgr = colIndex(head, ["accountmanager"]);
+  const iSrc = colIndex(head, ["referralsource"]);
+  const iContact = colIndex(head, ["referralsourcecontact"]);
+  const iSub = colIndex(head, ["submittedto"]);
+  const iStatus = colIndex(head, ["referralstatus","status"]);
+  const iReason = colIndex(head, ["referralreason"]);
+  let noteCols = { date: 1, author: 4, note: 7 };
+  for (let i = Math.max(0, hi) + 1; i < Math.min(rows.length, hi + 12); i++) {
+    const r = rows[i] || [];
+    const d = r.findIndex((c) => /^note\s*date$/i.test(String(c).trim()));
+    if (d >= 0) {
+      const a = r.findIndex((c) => /^author$/i.test(String(c).trim()));
+      const n = r.findIndex((c) => /^note$/i.test(String(c).trim()));
+      noteCols = { date: d, author: a >= 0 ? a : 4, note: n >= 0 ? n : 7 };
+      break;
+    }
+  }
+  const pick = (r, i) => i == null || i < 0 ? "" : String(r[i] ?? "").trim();
+  const isCaseRow = (r) => {
+    const a = pick(r, iSr >= 0 ? iSr : 0);
+    const name = pick(r, iName >= 0 ? iName : 1);
+    return /^\d+$/.test(a) && name && !/^note\s*date$/i.test(name);
+  };
+  const headers = ["SrNo","ReferralName","Branch","ReceivedDate","IntakePerson","AccountManager","ReferralSource","ReferralSourceContact","SubmittedTo","ReferralStatus","ReferralReason","NoteDate","Author","Note"];
+  const out = [];
+  let cur = null;
+  rows.slice(Math.max(0, hi) + 1).forEach((raw) => {
+    const r = raw || [];
+    if ((r).some((c) => /^note\s*date$/i.test(String(c).trim())) && !isCaseRow(r)) return;
+    if (isCaseRow(r)) {
+      cur = [pick(r, iSr), pick(r, iName), pick(r, iBranch), pick(r, iRecv), pick(r, iIntake), pick(r, iMgr), pick(r, iSrc), pick(r, iContact), pick(r, iSub), pick(r, iStatus), pick(r, iReason)];
+      out.push([...cur, "", "", ""]);
+      return;
+    }
+    if (!cur) return;
+    const nd = pick(r, noteCols.date);
+    const author = pick(r, noteCols.author);
+    const note = pick(r, noteCols.note);
+    if (!nd && !note) return;
+    out.push([...cur, nd, author, note]);
+  });
+  if (!out.length) throw new Error("Could not read nested referral notes.");
+  return { headers, rows: out };
+}
+async function pdfToTable(file) {
+  if (!window.pdfjsLib) throw new Error("PDF engine did not load.");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const data = await file.arrayBuffer(); const doc = await pdfjsLib.getDocument({ data }).promise; const lines = [];
+  for (let p=1; p<=doc.numPages; p++) {
+    const page = await doc.getPage(p); const tc = await page.getTextContent(); const buckets = [];
+    tc.items.forEach((item) => { const y=Math.round(item.transform[5]), x=item.transform[4]; let b=buckets.find((k)=>Math.abs(k.y-y)<4); if(!b){ b={y,parts:[]}; buckets.push(b);} b.parts.push({x,s:item.str}); });
+    buckets.sort((a,b)=>b.y-a.y); buckets.forEach((b)=>{ b.parts.sort((a,c)=>a.x-c.x); const t=b.parts.map((p)=>p.s).join(" ").replace(/\s+/g," ").trim(); if(t) lines.push(t); });
+  }
+  const headerIdx = lines.findIndex((l)=>/referral\s*name/i.test(l) && /note/i.test(l));
+  if (headerIdx>=0) {
+    const rows=[]; let cur=null;
+    lines.slice(headerIdx+1).forEach((line) => {
+      if (/^page\s+\d+/i.test(line)) return;
+      const m = line.match(/^(\d+)\s+(.+)$/);
+      if (m && /[A-Za-z]/.test(m[2])) { if (cur) rows.push(cur); cur=[m[1], line]; }
+      else if (cur) cur[1] += " " + line;
+    });
+    if (cur) rows.push(cur);
+    if (rows.length) return { headers:["SrNo","ReferralName","Note"], rows: rows.map((r)=>{ const rest=r[1].replace(/^\d+\s+/,""); const name=(rest.match(/^[A-Z][A-Z' \-]{2,}/)||[rest.split(/\s{2,}/)[0]])[0].trim(); return [r[0], name, rest]; }) };
+  }
+  const joined = lines.join("\n");
+  if (joined.includes(",") && /referralname|referral name/i.test(joined)) { const parsed=parseCSV(joined); if (parsed.length>1) return { headers:parsed[0], rows:parsed.slice(1) }; }
+  throw new Error("Could not detect a referral table in this PDF. Export CSV from HHA Exchange.");
+}
+function importTaskTable(headers, rows, fileName) {
+  const hm = mapHeaders(headers, TASK_ALIASES);
+  if (hm.title === undefined) return 0;
+  const fileState = stateFromText(fileName); const payload = {};
+  rows.forEach((r) => {
+    const pick = (k) => hm[k] === undefined ? "" : String(r[hm[k]] ?? "").trim();
+    const title = pick("title"); if (!title) return;
+    payload[uid()] = { title, patient: pick("patient"), assignee: pick("assignee"), ref: pick("ref"),
+      state: resolveState(pick("state")) || fileState || "GENERAL", priority: "auto",
+      due: parseLooseDate(pick("due")), status: "Open", source: fileName,
+      createdAt: Date.now(), createdBy: me.uid, createdByName: me.name || "anonymous", updatedAt: Date.now() };
+  });
+  const n = Object.keys(payload).length;
+  if (n) commitTasks((db) => Object.assign(db, payload), [fileName, n + " actions added"]);
+  return n;
+}
+async function ingestAnyFiles(fileList) {
+  const files = Array.from(fileList||[]); if (!files.length) return;
+  const quiet = files.length > 1;
+  let total = 0, screens = 0;
+  for (const file of files) {
+    try {
+      const table = await fileToTable(file);
+      if (looksLikeCrm(table.headers)) {
+        const cases = rowsToCases(table.headers, table.rows, { file: file.name, defaultState: table.defaultState });
+        if (!cases.length) { toast(file.name, "No referral rows.", "alert"); continue; }
+        mergeCases(cases, { quiet });
+        total += cases.length;
+        screens += cases.filter((c) => isScreening(c.status)).length;
+      } else if (mapHeaders(table.headers, TASK_ALIASES).title !== undefined) {
+        importTaskTable(table.headers, table.rows, file.name);
+      } else { openColumnMapper(table, file.name); setMode("pipeline"); }
+    } catch (e) { toast(file.name + " failed", e.message, "alert"); }
+  }
+  if (total) {
+    const by = {};
+    Object.values(CASES).forEach((c) => { const k = c.state || "GENERAL"; by[k] = (by[k] || 0) + 1; });
+    const mix = Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,n]) => `${stateLabel(k)} ${n}`).join(" · ");
+    toast(files.length > 1 ? files.length + " files ingested" : "Report ingested", mix);
+    if (screens) notifyOS("Initial Screening", `${screens} referral${screens===1?"":"s"} in Initial Screening after import.`, "import-screen");
+    const states = Object.keys(by).filter((k) => k && k !== "GENERAL");
+    if (states.length === 1) ovState = states[0];
+    setMode("pipeline");
+  }
+}
+function openColumnMapper(table, fileName) {
+  pendingMap = { table, fileName };
+  const fields = [["name","Name / referral"],["status","Status"],["notedate","Note date"],["author","Author"],["note","Note text"],["intake","Intake person"],["state","State"],["branch","Branch"],["srno","Case #"]];
+  const guess = mapCrmHeaders(table.headers);
+  document.getElementById("crmMapFields").innerHTML = fields.map(([k,label]) => `<div><div class="eyebrow mb-1">${esc(label)}</div><select class="fld-mono" data-map="${k}"><option value="">— skip —</option>${table.headers.map((h,i)=>`<option value="${i}" ${guess[k]===i?"selected":""}>${esc(h)}</option>`).join("")}</select></div>`).join("");
+  document.getElementById("crmMapBox").classList.remove("hidden");
+  toast("Map columns", fileName + " did not match a template.");
+}
+
+function renderAll() {
+  renderOverview();
+  renderPipeline();
+  renderAlerts();
+  paintNotifyButtons();
+  const st = pipelineStats();
+  document.getElementById("navCountPipe").textContent = st.attention;
+  const al = document.getElementById("navCountAlerts");
+  if (al) al.textContent = alertsBadgeCount();
+  const badge = st.attention ? `(${st.attention}) ` : "";
+  document.title = badge + "HHA Pro · Cottage Homecare";
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  const part = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  return part + (me.name ? ", " + me.name.split(" ")[0] : "");
+}
+function hBarChart(entries, colorFn, clickAttr) {
+  if (!entries.length) return `<div style="color:var(--muted)">No data yet.</div>`;
+  const max = Math.max(1, ...entries.map((e) => e.n));
+  return entries.map((e) => `
+    <button class="funnel-row" ${clickAttr ? clickAttr(e) : ""}>
+      <div class="clip text-[13px] font-medium">${esc(e.label)}</div>
+      <div class="funnel-bar lg"><i style="width:${Math.max(6,(e.n/max)*100)}%;background:${colorFn(e)}"></i></div>
+      <div class="text-right font-semibold" style="font-variant-numeric:tabular-nums">${e.n}</div>
+    </button>`).join("");
+}
+function donutChart(parts) {
+  const total = parts.reduce((s, p) => s + p.n, 0);
+  if (!total) return `<div style="color:var(--muted)">No data yet.</div>`;
+  const r = 38, circ = 2 * Math.PI * r;
+  let acc = 0;
+  const rings = parts.filter((p) => p.n > 0).map((p) => {
+    const frac = p.n / total;
+    const dash = frac * circ;
+    const rot = acc * 360;
+    acc += frac;
+    return `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${p.color}" stroke-width="11" stroke-linecap="butt" stroke-dasharray="${dash} ${circ - dash}" transform="rotate(${rot - 90} 50 50)"></circle>`;
+  }).join("");
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 100 100" width="118" height="118" aria-hidden="true">${rings}</svg>
+    <div class="donut-legend">${parts.map((p) => `<div class="work-row"><span class="clip">${esc(p.label)}</span><span style="font-variant-numeric:tabular-nums">${p.n}</span></div>`).join("")}</div>
+  </div>`;
+}
+function overviewCases() {
+  const cases = Object.values(CASES).map(hydrateCase);
+  if (ovState === "all") return cases;
+  return cases.filter((c) => (c.state || "GENERAL") === ovState);
+}
+function renderOverview() {
+  const hello = document.getElementById("ovHello");
+  if (hello) hello.textContent = greeting();
+  const allCases = Object.values(CASES).map(hydrateCase);
+  const byState = groupByState(allCases);
+  const tabs = document.getElementById("ovStateTabs");
+  if (byState.length > 1) {
+    const items = [["all", allCases.length], ...byState.map(([k, list]) => [k, list.length])];
+    tabs.innerHTML = items.map(([k, n]) => `<button class="ov-tab ${ovState===k?"on":""}" data-ovstate="${esc(k)}">${esc(k==="all"?"All states":stateLabel(k))} · ${n}</button>`).join("");
+    tabs.querySelectorAll("[data-ovstate]").forEach((b) => b.onclick = () => { ovState = b.dataset.ovstate; renderOverview(); });
+  } else {
+    tabs.innerHTML = "";
+    if (byState.length === 1) ovState = byState[0][0];
+  }
+  const empty = document.getElementById("ovEmpty");
+  const dash = document.getElementById("ovDash");
+  const has = allCases.length > 0;
+  empty.classList.toggle("hidden", has);
+  dash.classList.toggle("hidden", !has);
+  const title = document.getElementById("ovStateTitle");
+  if (!has) {
+    title.textContent = "Pipeline mix";
+    return;
+  }
+  const cases = overviewCases();
+  const stateName = ovState === "all" ? (byState.length === 1 ? stateLabel(byState[0][0]) : "All states") : stateLabel(ovState);
+  title.textContent = stateName;
+  const statuses = {};
+  const sources = {};
+  const intakes = {};
+  let screening = 0, otherOpen = 0, closed = 0, stale = 0, week = 0, mid = 0;
+  cases.forEach((c) => {
+    const k = c.status || "Unknown"; statuses[k] = (statuses[k] || 0) + 1;
+    if (c.source) sources[c.source] = (sources[c.source] || 0) + 1;
+    if (c.intake) {
+      if (!intakes[c.intake]) intakes[c.intake] = { n: 0, screen: 0, stale: 0 };
+      intakes[c.intake].n++;
+      if (isScreening(c.status)) intakes[c.intake].screen++;
+      if (c.days == null || c.days > 14) intakes[c.intake].stale++;
+    }
+    if (isScreening(c.status)) screening++;
+    else if (isClosed(c.status)) closed++;
+    else otherOpen++;
+    if (!isClosed(c.status) && (c.days == null || c.days > 14)) stale++;
+    if (c.days != null && c.days <= 7) week++;
+    else if (c.days != null && c.days <= 14) mid++;
+  });
+  document.getElementById("ovKpis").innerHTML = [
+    { n: cases.length, l: "Cases in view", c: "var(--ink)", go: "all" },
+    { n: screening, l: "Initial Screening", c: "var(--accent)", go: "screen" },
+    { n: stale, l: "Stale 14+ days", c: "var(--crit)", go: "stale" },
+    { n: week, l: "Touched in 7 days", c: "var(--ok)", go: "week" },
+  ].map((k) => `<button class="kpi" data-ovkpi="${k.go}"><div class="n" style="color:${k.c}">${k.n}</div><div class="l">${k.l}</div></button>`).join("");
+  document.querySelectorAll("[data-ovkpi]").forEach((b) => b.onclick = () => jumpPipeline(b.dataset.ovkpi));
+  const statusEntries = Object.entries(statuses).sort((a,b)=>b[1]-a[1]).map(([label, n]) => ({ label, n }));
+  document.getElementById("ovStatusHead").textContent = `${cases.length} case${cases.length===1?"":"s"} · ${statusEntries.length} status${statusEntries.length===1?"":"es"}`;
+  document.getElementById("ovStatusChart").innerHTML = hBarChart(statusEntries, (e) => statusColor(e.label), (e) => `data-st="${esc(e.label)}"`);
+  document.querySelectorAll("#ovStatusChart [data-st]").forEach((b) => b.onclick = () => jumpPipeline("status", b.dataset.st));
+  document.getElementById("ovRecencyChart").innerHTML = donutChart([
+    { label: "This week", n: week, color: "var(--ok)" },
+    { label: "8–14 days", n: mid, color: "var(--high)" },
+    { label: "Needs attention", n: Math.max(0, cases.length - week - mid - closed), color: "var(--crit)" },
+    { label: "Closed / lost", n: closed, color: "var(--muted)" },
+  ]);
+  const people = Object.entries(intakes).sort((a,b)=>b[1].n-a[1].n).slice(0, 8).map(([label, d]) => ({ label, n: d.n }));
+  document.getElementById("ovIntakeChart").innerHTML = people.length
+    ? hBarChart(people, () => "var(--accent)", (e) => `data-ovintake="${esc(e.label)}"`)
+    : `<div style="color:var(--muted)">No intake owners in this slice.</div>`;
+  document.querySelectorAll("[data-ovintake]").forEach((b) => b.onclick = () => { pipeFilters.intake = b.dataset.ovintake; pipeFilters.state = ovState === "all" ? "all" : ovState; setMode("pipeline"); });
+  const src = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0, 8).map(([label, n]) => ({ label, n }));
+  document.getElementById("ovSourceChart").innerHTML = src.length
+    ? hBarChart(src, () => "var(--navy)")
+    : `<div style="color:var(--muted)">No referral sources tagged.</div>`;
+}
+function jumpPipeline(kind, status) {
+  pipeFilters.kpi = null; pipeFilters.status = "all"; pipeFilters.kind = "all";
+  pipeFilters.state = ovState === "all" ? "all" : ovState;
+  if (kind === "screen") pipeFilters.status = "__screen__";
+  if (kind === "other") pipeFilters.status = "__other__";
+  if (kind === "stale") pipeFilters.kpi = "stale";
+  if (kind === "week") pipeFilters.kpi = "week";
+  if (kind === "status") pipeFilters.status = status;
+  if (kind === "all") { pipeFilters.status = "all"; pipeFilters.kpi = null; }
+  setMode("pipeline");
+}
+
+function fillReminderLinks() {
+  const sel = document.getElementById("rLink");
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">No linked record</option>` + itemList().slice(0, 80).map((c) =>
+    `<option value="${esc(c.kind+":"+c.id)}">${esc((c.kind==="task"?"Action":"Referral")+" · "+c.displayName)}</option>`
+  ).join("");
+  if ([...sel.options].some((o) => o.value === cur)) sel.value = cur;
+}
+function renderAlerts() {
+  const panel = document.getElementById("alertsPanel");
+  if (!panel) return;
+  const st = pipelineStats();
+  const rems = reminderRows().slice().sort((a, b) => (a.at || 0) - (b.at || 0));
+  const dueRems = rems.filter((r) => r.at && r.at <= now);
+  const upcoming = rems.filter((r) => !r.at || r.at > now);
+  const screenLate = st.cases.filter((c) => isScreening(c.status) && (c.days == null || c.days >= 3));
+  const stale = st.cases.filter((c) => !isClosed(c.status) && (c.days == null || c.days > 14));
+  const overdue = st.tasks.filter((t) => t.status !== "Resolved" && t.due && t.due <= now);
+  const kpis = [
+    { n: overdue.length, l: "Due actions", c: "var(--crit)" },
+    { n: stale.length, l: "Stale 14+ days", c: "var(--high)" },
+    { n: screenLate.length, l: "Screening 3+ days", c: "var(--accent)" },
+    { n: dueRems.length + upcoming.length, l: "Open reminders", c: "var(--ok)" },
+  ];
+  document.getElementById("alertKpis").innerHTML = kpis.map((k) =>
+    `<div class="kpi"><div class="n" style="color:${k.c}">${k.n}</div><div class="l">${k.l}</div></div>`
+  ).join("");
+  const queue = [
+    ...overdue.map((t) => ({ kind: "Due", title: t.title, meta: (t.assignee || t.state || "Action") + " · " + fmtTime(t.due), key: "task:"+t.id, cls: "pri-critical" })),
+    ...dueRems.map((r) => ({ kind: "Reminder", title: r.title, meta: fmtTime(r.at) + (r.repeat && r.repeat !== "once" ? " · " + r.repeat : ""), key: r.itemKey || "", cls: "pri-high", rem: r.id })),
+    ...screenLate.slice(0, 8).map((c) => ({ kind: "Screening", title: c.name, meta: recencyLabel(c.days) + " · " + (c.intake || "unassigned"), key: "case:"+c.id, cls: "st-screen" })),
+    ...stale.filter((c) => !isScreening(c.status)).slice(0, 8).map((c) => ({ kind: "Stale", title: c.name, meta: (c.status || "") + " · " + recencyLabel(c.days), key: "case:"+c.id, cls: "tier-over-14" })),
+  ].slice(0, 16);
+  document.getElementById("alertQueue").innerHTML = queue.length ? queue.map((x) => `
+    <div class="alert-item">
+      <button type="button" class="text-left min-w-0" data-alert="open" data-key="${esc(x.key)}" ${x.rem ? `data-rid="${esc(x.rem)}"` : ""}>
+        <div class="flex items-center gap-2 mb-0.5"><span class="pill ${x.cls}">${esc(x.kind)}</span></div>
+        <div class="text-[14px] font-medium clip">${esc(x.title)}</div>
+        <div class="text-[12px]" style="color:var(--muted)">${esc(x.meta)}</div>
+      </button>
+      <button type="button" class="btn" data-alert="ping" data-key="${esc(x.key)}" data-title="${esc(x.title)}" data-kind="${esc(x.kind)}">Ping</button>
+    </div>`).join("") : `<div class="py-8 text-center" style="color:var(--muted)">Nothing waiting. Set a reminder or import a report.</div>`;
+  document.getElementById("alertReminders").innerHTML = (dueRems.length + upcoming.length)
+    ? [...dueRems, ...upcoming].map((r) => `
+      <div class="py-3" style="border-bottom:1px solid var(--line)">
+        <button type="button" class="w-full text-left min-w-0" data-alert="open" data-key="${esc(r.itemKey || "")}">
+          <div class="text-[14px] font-medium clip">${esc(r.title)}</div>
+          <div class="text-[12px]" style="color:var(--muted)">${r.at && r.at <= now ? "Due · " : ""}${fmtTime(r.at)}${r.repeat && r.repeat !== "once" ? " · " + r.repeat : ""}${r.body ? " · " + clipText(r.body, 60) : ""}</div>
+        </button>
+        <div class="flex flex-wrap gap-1 mt-2">
+          <button type="button" class="btn" data-alert="snooze" data-id="${esc(r.id)}">+1h</button>
+          <button type="button" class="btn" data-alert="tomorrow" data-id="${esc(r.id)}">+1d</button>
+          <button type="button" class="btn" data-alert="done" data-id="${esc(r.id)}">Done</button>
+          <button type="button" class="btn btn-danger" data-alert="del" data-id="${esc(r.id)}">Remove</button>
+        </div>
+      </div>`).join("")
+    : `<div class="py-6 text-center" style="color:var(--muted)">No reminders yet.</div>`;
+  const log = loadAlertLog();
+  document.getElementById("alertLog").innerHTML = log.length ? log.slice(0, 14).map((x) => `
+    <button type="button" class="alert-item" data-alert="open" data-key="${esc(x.itemKey || "")}">
+      <div class="min-w-0">
+        <div class="text-[13px] font-medium clip">${esc(x.title)}</div>
+        <div class="text-[12px]" style="color:var(--muted)">${fmtTime(x.at)}${x.body ? " · " + clipText(x.body, 80) : ""}</div>
+      </div>
+    </button>`).join("") : `<div class="py-6 text-center" style="color:var(--muted)">No alerts fired yet.</div>`;
+  fillReminderLinks();
+  const when = document.getElementById("rWhen");
+  if (when && !when.value) when.value = defaultReminderWhen();
+}
+
+function addReminder() {
+  const title = (document.getElementById("rTitle").value || "").trim();
+  const whenRaw = document.getElementById("rWhen").value;
+  if (!title) { toast("Needs a title", "Say what to remember.", "alert"); return; }
+  if (!whenRaw) { toast("Needs a time", "Pick when this should fire.", "alert"); return; }
+  const at = new Date(whenRaw).getTime();
+  if (isNaN(at)) { toast("Invalid time", "", "alert"); return; }
+  const id = uid();
+  commitReminders((db) => {
+    db[id] = {
+      id, title,
+      body: (document.getElementById("rBody").value || "").trim(),
+      at,
+      repeat: document.getElementById("rRepeat").value || "once",
+      itemKey: document.getElementById("rLink").value || "",
+      status: "open",
+      createdAt: Date.now(),
+      createdBy: me.name || "anonymous"
+    };
+  }, ["Reminder set", title + " · " + fmtTime(at)]);
+  document.getElementById("rTitle").value = "";
+  document.getElementById("rBody").value = "";
+  document.getElementById("rWhen").value = defaultReminderWhen();
+  if (!notifyAllowed()) {
+    toast("Allow desktop alarms", "Chrome will ask so this reminder pops on the computer.", "info");
+    enableNotifications();
+  }
+}
+function snoozeReminder(id, ms) {
+  commitReminders((db) => {
+    if (!db[id]) return;
+    db[id].at = Math.max(db[id].at || now, now) + ms;
+    db[id].status = "open";
+  });
+}
+function finishReminder(id) {
+  commitReminders((db) => {
+    const r = db[id]; if (!r) return;
+    if (r.repeat === "daily") { r.at = (r.at || now) + 86400000; if (r.at <= now) r.at = now + 86400000; r.status = "open"; }
+    else if (r.repeat === "weekly") { r.at = (r.at || now) + 7 * 86400000; if (r.at <= now) r.at = now + 7 * 86400000; r.status = "open"; }
+    else r.status = "done";
+  }, ["Reminder cleared", ""]);
+}
+function deleteReminder(id) {
+  commitReminders((db) => { delete db[id]; }, ["Reminder removed", ""]);
+}
+
+function renderPipeline() {
+  const all = itemList();
+  const rows = visibleItems();
+  const st = pipelineStats();
+  document.getElementById("crmCount").textContent = `${rows.length} shown · ${st.total} cases · ${st.openTasks} actions`;
+  const tiles = [
+    { key:"screen", label:"Initial Screening", n:st.screening, color:"var(--accent)" },
+    { key:"stale", label:"Needs attention", n:st.stale, color:"var(--crit)" },
+    { key:"week", label:"Touched ≤ 7 days", n:st.week, color:"var(--ok)" },
+    ...Object.entries(st.statuses).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name,n])=>({key:"st:"+name,label:name,n,color:"var(--high)"}))
+  ];
+  document.getElementById("kpiRow").innerHTML = tiles.map((t)=>`<button class="kpi ${pipeFilters.kpi===t.key?"on":""}" data-crm="kpi" data-key="${esc(t.key)}" style="min-width:120px;flex:1"><div class="n" style="color:${t.color};font-size:22px">${t.n}</div><div class="l">${esc(t.label)}</div></button>`).join("");
+  const statuses = Object.keys(st.statuses).sort();
+  const stSel = document.getElementById("crmStatus"); const cur = pipeFilters.status;
+  stSel.innerHTML = `<option value="all">All statuses</option><option value="__screen__">Initial Screening</option><option value="__other__">Other open</option>` + statuses.map((s)=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+  stSel.value = [...stSel.options].some((o)=>o.value===cur)?cur:"all";
+  const intakes = [...new Set(all.map((c)=>c.intake).filter(Boolean))].sort();
+  const iSel = document.getElementById("crmIntake"); const ic = pipeFilters.intake;
+  iSel.innerHTML = `<option value="all">All intake</option>` + intakes.map((s)=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+  iSel.value = [...iSel.options].some((o)=>o.value===ic)?ic:"all";
+  const states = [...new Set(all.map((c)=>c.state||"GENERAL"))].sort((a,b)=>stateSortKey(a).localeCompare(stateSortKey(b)));
+  const stateSel = document.getElementById("crmState");
+  if (stateSel) {
+    const sc = pipeFilters.state;
+    stateSel.innerHTML = `<option value="all">All states</option>` + states.map((s)=>`<option value="${esc(s)}">${esc(stateLabel(s))}</option>`).join("");
+    stateSel.value = [...stateSel.options].some((o)=>o.value===sc)?sc:"all";
+  }
+  const bulk = document.getElementById("bulkStatus");
+  bulk.innerHTML = `<option value="">Set status…</option>` + statuses.map((s)=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+  document.getElementById("viewRank").style.background = pipeFilters.view==="rank" ? "var(--accent-soft)" : "";
+  document.getElementById("viewList").style.background = pipeFilters.view==="list" ? "var(--accent-soft)" : "";
+  document.getElementById("viewBoard").style.background = pipeFilters.view==="board" ? "var(--accent-soft)" : "";
+  const split = document.querySelector("#pipelinePanel .workspace");
+  split.style.display = pipeFilters.view==="board" ? "none" : "grid";
+  document.getElementById("crmBoard").classList.toggle("hidden", pipeFilters.view!=="board");
+  document.getElementById("bulkBar").classList.toggle("hidden", selected.size===0);
+  document.getElementById("bulkCount").textContent = selected.size + " selected";
+  if (pipeFilters.view==="board") renderBoard(rows); else renderCaseTable(rows);
+  renderDrawer();
+}
+function caseRowHtml(c) {
+  const key = c.kind+":"+c.id;
+  const on = openItem === key;
+  return `<div class="case-row ${on?"on":""}" data-crm="open" data-key="${esc(key)}">
+      <input type="checkbox" data-crm="sel" data-key="${esc(key)}" ${selected.has(key)?"checked":""} onclick="event.stopPropagation()">
+      <div class="min-w-0"><div class="clip font-medium text-[13.5px]">${esc(c.displayName)}</div>
+      <div class="clip text-[11px]" style="color:var(--muted)">${c.kind==="task"?"Action":esc(c.source||"No source")} · ${(c.notes||[]).length} notes${c.intake?" · "+esc(c.intake):""}</div></div>
+      <span class="hide-sm clip pill ${statusChip(c.status)}">${esc(c.status||"—")}</span>
+      <span class="hide-sm pill ${c.priClass}">${esc(c.priLabel)}</span>
+      <span class="text-[12px]" style="color:var(--muted)">${fmtDate(c.lastNoteAt || c.due)}</span>
+    </div>`;
+}
+function renderCaseTable(rows) {
+  if (!rows.length) {
+    document.getElementById("crmList").innerHTML = `<div class="py-16 text-center" style="color:var(--muted)">${Object.keys(CASES).length||Object.keys(TASKS).length?"Nothing matches.":"Import HHA reports — multiple files split by state."}</div>`;
+    return;
+  }
+  const groups = groupByState(rows);
+  const showHeads = pipeFilters.state === "all" && groups.length > 1;
+  document.getElementById("crmList").innerHTML = showHeads
+    ? groups.map(([st, list]) => `<div class="state-head" data-crm="filterState" data-state="${esc(st)}"><span>${esc(stateLabel(st))}</span><span style="color:var(--muted);font-weight:550">${list.length}</span></div>${list.map(caseRowHtml).join("")}`).join("")
+    : rows.map(caseRowHtml).join("");
+}
+function renderBoard(rows) {
+  const byState = groupByState(rows);
+  const paint = (list) => {
+    const groups = new Map();
+    list.forEach((c) => { const k = isScreening(c.status) ? c.status : (c.status || "Unknown"); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(c); });
+    const ordered = [...groups.entries()].sort((a,b) => (isScreening(a[0])?-1:0) - (isScreening(b[0])?-1:0) || b[1].length-a[1].length);
+    return `<div class="kanban">${ordered.map(([st,items]) => `<div class="kanban-col"><div class="px-3 py-2 flex justify-between" style="border-bottom:1px solid var(--line)"><span class="eyebrow">${esc(st)}</span><span style="color:var(--muted)">${items.length}</span></div>${items.map((c)=>`<div class="kanban-card" data-crm="open" data-key="${esc(c.kind+":"+c.id)}"><div class="font-medium">${esc(c.displayName)}</div><div class="text-[11px] mt-1" style="color:var(--muted)">${esc(c.intake||c.state||"")} · ${fmtDate(c.lastNoteAt||c.due)}</div><div class="mt-2"><span class="pill ${c.priClass}">${esc(c.priLabel)}</span></div></div>`).join("")}</div>`).join("")}</div>`;
+  };
+  document.getElementById("crmBoard").innerHTML = (byState.length > 1 && pipeFilters.state === "all")
+    ? byState.map(([st, list]) => `<div class="mb-4"><div class="state-head"><span>${esc(stateLabel(st))}</span><span style="color:var(--muted);font-weight:550">${list.length}</span></div>${paint(list)}</div>`).join("")
+    : paint(rows);
+}
+function getOpen() {
+  if (!openItem) return null;
+  const [kind, ...rest] = openItem.split(":");
+  const id = rest.join(":");
+  if (kind === "case") return CASES[id] ? hydrateCase(CASES[id]) : null;
+  if (kind === "task") return TASKS[id] ? hydrateTask(id, TASKS[id]) : null;
+  return null;
+}
+function renderDrawer() {
+  const pane = document.getElementById("caseWrap");
+  if (window.innerWidth <= 980) pane.classList.toggle("open", !!openItem);
+  const c = getOpen();
+  if (!c) {
+    document.getElementById("caseDrawer").innerHTML = `<div class="detail-empty"><div><div class="text-[18px] font-semibold mb-1" style="color:var(--ink)">Select a record</div><p>Ranked view already puts the oldest touch at the top.</p></div></div>`;
+    return;
+  }
+  if (c.kind === "task") return renderTaskDrawer(c);
+  const notes = c.notes || [];
+  const sum = summarizeCase(c);
+  const types = Object.entries(sum.types).map(([k,n])=>`${n} ${k.toLowerCase()}`).join(" · ");
+  document.getElementById("caseDrawer").innerHTML = `
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="eyebrow">${esc(c.state||"GENERAL")} · ${esc(c.srno||"—")}</div>
+          <div class="text-[22px] font-semibold mt-1">${esc(c.name)}</div>
+          <div class="text-[13px] mt-1" style="color:var(--muted)">${esc(c.intake||"No intake")} · ${esc(c.source||"No source")}${c.ids&&c.ids.length?" · "+esc(c.ids.join(", ")):""}</div>
+          <div class="flex flex-wrap gap-2 mt-3"><span class="pill ${recencyClass(sum.days)}">${esc(recencyLabel(sum.days))}</span><span class="pill ${statusChip(c.status)}">${esc(c.status||"No status")}</span></div>
+        </div>
+        <button class="icon-btn" data-crm="close">✕</button>
+      </div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="sum-box"><div class="eyebrow mb-1">Note rollup</div>
+        <div class="text-[14px] font-medium mb-2">${esc(sum.headline)}</div>
+        <ul class="text-[13px] space-y-1" style="color:var(--muted)">${sum.bullets.map((b)=>`<li>• ${esc(b)}</li>`).join("")}</ul>
+        <div class="text-[13px] mt-2 font-medium" style="color:var(--accent)">Next: ${esc(sum.next)}</div>
+      </div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="eyebrow mb-2">Assignment & next touch</div>
+      <div class="flex flex-wrap gap-2">
+        <select data-crm="state" data-id="${esc(c.id)}" class="fld-mono"><option value="GENERAL" ${(c.state||"GENERAL")==="GENERAL"?"selected":""}>Unmapped</option>${Object.keys(US).map((s)=>`<option value="${s}" ${c.state===s?"selected":""}>${s} · ${US[s]}</option>`).join("")}</select>
+        <input data-crm="intakeField" data-id="${esc(c.id)}" class="fld" value="${esc(c.intake||"")}" placeholder="Intake">
+        <input data-crm="statusField" data-id="${esc(c.id)}" class="fld" value="${esc(c.status||"")}" placeholder="Status">
+        <input data-crm="dueField" data-id="${esc(c.id)}" type="datetime-local" class="fld-mono" value="${toLocalInput(c.due)}">
+      </div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="eyebrow mb-2">Log a note</div>
+      <div class="flex gap-2"><input id="caseNoteText" class="fld" style="flex:1" placeholder="Call, text, or update…"><button class="btn btn-primary" data-crm="addCaseNote" data-id="${esc(c.id)}">Log</button></div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="flex justify-between mb-2"><div class="eyebrow">Timeline (${notes.length}${types?" · "+types:""})</div>
+        <button class="btn" data-crm="toggleNotes">Expand</button></div>
+      <div id="notesCollapsed" class="text-[13px]" style="color:var(--muted)">Latest is in the rollup. Expand for the full thread.</div>
+      <div id="notesFull" class="hidden">${notes.slice().reverse().map((n)=>`<div class="note-block"><div class="flex gap-2 items-center"><span class="ntype ${ntypeClass(n.type)}">${esc(n.type)}</span><span style="font-size:11px;color:var(--muted)">${fmtTime(n.at)} · ${esc(n.author||"")}</span></div><div class="text-[14px] mt-1" style="white-space:pre-wrap">${esc(n.text)}</div></div>`).join("")||"No notes."}</div>
+    </div>
+    <div class="p-6 flex flex-wrap gap-2">
+      <button data-crm="copy" data-id="${esc(c.id)}" class="btn">Copy summary</button>
+      <button data-crm="alertOne" data-id="${esc(c.id)}" class="btn">Notify now</button>
+      <button data-crm="deleteCase" data-id="${esc(c.id)}" class="btn btn-danger">Remove</button>
+    </div>`;
+}
+function renderTaskDrawer(t) {
+  document.getElementById("caseDrawer").innerHTML = `
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="eyebrow">${esc(t.state||"GENERAL")} · Action</div>
+          <div class="text-[22px] font-semibold mt-1">${esc(t.title)}</div>
+          <div class="text-[13px] mt-1" style="color:var(--muted)">${esc(t.patient||"No patient")} · ${fmtTime(t.createdAt)}</div>
+        </div>
+        <button class="icon-btn" data-crm="close">✕</button>
+      </div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="eyebrow mb-2">Status</div>
+      <div class="flex flex-wrap gap-1.5">${["Open","In progress","Waiting on agency","Resolved"].map((s)=>`<button data-crm="taskStatus" data-id="${t.id}" data-val="${s}" class="btn" style="${t.status===s?"background:var(--accent-soft);color:var(--accent);border-color:transparent":""}">${s}</button>`).join("")}</div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="flex flex-wrap gap-2">
+        <input data-crm="taskField" data-field="assignee" data-id="${t.id}" class="fld" value="${esc(t.assignee||"")}" placeholder="Assignee">
+        <input data-crm="taskField" data-field="patient" data-id="${t.id}" class="fld" value="${esc(t.patient||"")}" placeholder="Patient">
+        <input data-crm="taskDue" data-id="${t.id}" type="datetime-local" class="fld-mono" value="${toLocalInput(t.due)}">
+      </div>
+    </div>
+    <div class="p-6" style="border-bottom:1px solid var(--line)">
+      <div class="flex gap-2 mb-3"><input id="taskNoteText" class="fld" style="flex:1" placeholder="What happened?"><button class="btn btn-primary" data-crm="addTaskNote" data-id="${t.id}">Log</button></div>
+      ${(t.notes||[]).slice().reverse().map((n)=>`<div class="note-block"><div style="font-size:11px;color:var(--muted)">${fmtTime(n.at)} · ${esc(n.byName||n.author||"")}</div><div class="text-[14px] mt-1">${esc(n.text)}</div></div>`).join("") || `<div style="color:var(--muted)">No notes yet.</div>`}
+    </div>
+    <div class="p-6"><button class="btn btn-danger" data-crm="deleteTask" data-id="${t.id}">Delete</button></div>`;
+}
+
+function openItemByKey(key) { openItem = key; setMode("pipeline"); }
+function addCaseNote(id, text) {
+  if (!text.trim()) return;
+  const box = document.getElementById("caseNoteText");
+  if (box) box.value = "";
+  commitCases((db) => {
+    if (!db[id]) return;
+    const type = classifyNote(text);
+    db[id].notes = [...(db[id].notes||[]), { id: uid(), at: Date.now(), author: me.name || "anonymous", type, text: text.trim() }];
+    db[id].lastNoteAt = Date.now(); db[id].updatedAt = Date.now();
+  }, ["Note logged", ""]);
+}
+function exportPipeline() {
+  const rows = visibleItems();
+  const header = ["Kind","Case#","Name","State","Status","Intake","Source","Last note","Days old","Notes","Next action"];
+  const body = rows.map((c) => {
+    const sum = c.kind === "case" ? summarizeCase(c) : { next: c.status, headline: c.title };
+    return [c.kind, c.srno||c.ref||"", c.displayName, c.state||"", c.status||"", c.intake||"", c.source||"", (c.lastNoteAt||c.due)?new Date(c.lastNoteAt||c.due).toISOString().slice(0,10):"", c.days==null?"":c.days, (c.notes||[]).length, sum.next||sum.headline||""];
+  });
+  const blob = new Blob([toCSV([header,...body])], { type:"text/csv;charset=utf-8" });
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`pipeline-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+}
+function clearPipeline() {
+  const n = Object.keys(CASES).length + Object.keys(TASKS).length;
+  if (!n) { toast("Nothing to clear",""); return; }
+  if (!confirm(`Erase all ${n} pipeline records from this browser?`)) return;
+  commitCases((db)=>{ Object.keys(db).forEach((k)=>delete db[k]); });
+  commitTasks((db)=>{ Object.keys(db).forEach((k)=>delete db[k]); }, ["Pipeline cleared", n+" removed"]);
+  openItem = null; selected.clear();
+}
+function alertStale() {
+  const stale = Object.values(CASES).map(hydrateCase).filter((c)=>!isClosed(c.status) && (c.days==null||c.days>14));
+  if (!stale.length) { toast("Nothing stale", ""); return; }
+  notifyOS("Stale referrals", `${stale.length} case${stale.length===1?"":"s"} have no note in 14+ days.`, "stale-digest");
+  toast("Alert sent", stale.length + " in the notification bar");
+}
+
+function addTask() {
+  const title = document.getElementById("fTitle").value.trim();
+  if (!title) { toast("Needs a title", "Say what has to happen.", "alert"); return; }
+  const dueRaw = document.getElementById("fDue").value;
+  const note = document.getElementById("fNote").value.trim();
+  const task = {
+    title, assignee: document.getElementById("fAssignee").value.trim(),
+    patient: document.getElementById("fPatient").value.trim(),
+    state: document.getElementById("fState").value,
+    priority: document.getElementById("fPri").value,
+    due: dueRaw ? new Date(dueRaw).getTime() : null, status: "Open",
+    createdAt: Date.now(), createdBy: me.uid, createdByName: me.name || "anonymous", updatedAt: Date.now(),
+  };
+  if (note) task.notes = { [uid()]: { text: note, at: Date.now(), by: me.uid, byName: me.name || "anonymous" } };
+  const id = uid();
+  commitTasks((db) => { db[id] = task; }, ["Action added", title]);
+  ["fTitle","fPatient","fNote","fDue"].forEach((i) => document.getElementById(i).value = "");
+  document.getElementById("composeSheet").classList.remove("show");
+  openItem = "task:"+id; setMode("pipeline");
+}
+
+/* Notifications — computer notification bar, same path as the Maryland extension */
+function notifyAllowed() { return "Notification" in window && Notification.permission === "granted"; }
+function paintNotifyButtons() {
+  const on = notifyAllowed();
+  const btn2 = document.getElementById("btnNotify2");
+  if (btn2) btn2.textContent = on ? "Desktop alarms on" : "Enable desktop alarms";
+  const status = document.getElementById("alertPermStatus");
+  if (status) {
+    status.innerHTML = on
+      ? `<span class="dot" style="margin-top:6px"></span><div><div class="text-[14px] font-semibold">Computer notifications on</div><div class="text-[12px]" style="color:var(--muted)">Reminders fire as an alarm in your desktop notification center — even if this tab is in the background. Keep Chrome open, same as the Maryland daily-report extension.</div></div>`
+      : `<span class="dot" style="margin-top:6px;background:var(--high);box-shadow:0 0 0 3px var(--high-soft)"></span><div><div class="text-[14px] font-semibold">Desktop alarms are off</div><div class="text-[12px]" style="color:var(--muted)">Allow notifications so reminders push into this computer’s notification bar like an alarm.</div></div>`;
+  }
+}
+function chime() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const nowT = ctx.currentTime;
+    const beep = (t, f, dur, vol) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    };
+    beep(nowT, 880, 0.14, 0.11);
+    beep(nowT + 0.16, 1174, 0.18, 0.12);
+    beep(nowT + 0.38, 1318, 0.28, 0.1);
+    setTimeout(() => ctx.close(), 1200);
+  } catch (e) {}
+}
+function popOut(title, body, itemKey) {
+  const stack = document.getElementById("popStack");
+  if (!stack) return;
+  const el = document.createElement("div");
+  el.className = "pop-alert";
+  el.innerHTML = `<div class="pop-row">
+    <div>
+      <div class="pop-kicker">HHA Pro</div>
+      <div class="pop-title">${esc(title)}</div>
+      <div class="pop-body">${esc(body || "")}</div>
+    </div>
+    <button type="button" class="btn" data-pop-x>OK</button>
+  </div>`;
+  el.querySelector("[data-pop-x]").onclick = (e) => { e.stopPropagation(); el.remove(); };
+  el.onclick = () => { if (itemKey) openItemByKey(itemKey); el.remove(); };
+  stack.prepend(el);
+  while (stack.children.length > 4) stack.lastChild.remove();
+  setTimeout(() => el.remove(), 12000);
+}
+function postToSW(msg) {
+  return new Promise((resolve) => {
+    try {
+      const worker = swReg && (swReg.active || navigator.serviceWorker.controller);
+      if (!worker) return resolve(false);
+      const ch = new MessageChannel();
+      const t = setTimeout(() => resolve(true), 800);
+      ch.port1.onmessage = () => { clearTimeout(t); resolve(true); };
+      worker.postMessage(msg, [ch.port2]);
+    } catch (e) { resolve(false); }
+  });
+}
+function reminderAlarms() {
+  return reminderRows()
+    .filter((r) => r && r.at)
+    .map((r) => ({
+      id: "rem:" + r.id,
+      title: r.title || "HHA Pro reminder",
+      body: r.body || "Reminder",
+      tag: "rem:" + r.id,
+      fireAt: r.at,
+      repeat: r.repeat || "once",
+      data: { url: location.href.split("#")[0] + "#alerts", item: r.itemKey || null }
+    }));
+}
+function syncAlarmsToSW() {
+  postToSW({ type: "sync", alarms: reminderAlarms() });
+}
+async function registerSW() {
+  if (!("serviceWorker" in navigator) || !window.isSecureContext) return null;
+  try {
+    swReg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    await navigator.serviceWorker.ready;
+    if (swReg.waiting) swReg.waiting.postMessage({ type: "ping" });
+    navigator.serviceWorker.addEventListener("message", (ev) => {
+      if (ev.data && ev.data.type === "open" && ev.data.data && ev.data.data.item) openItemByKey(ev.data.data.item);
+    });
+    syncAlarmsToSW();
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (reg.periodicSync) await reg.periodicSync.register("hha-alarms", { minInterval: 15 * 60 * 1000 });
+    } catch (_) {}
+    return swReg;
+  } catch (e) { return null; }
+}
+async function notifyOS(title, body, tag, itemKey, opts) {
+  if (!(opts && opts.nolog)) logAlert(title, body, tag, itemKey);
+  popOut(title, body, itemKey);
+  if (!(opts && opts.silent)) chime();
+  if (document.getElementById("alertsPanel") && document.getElementById("alertsPanel").classList.contains("active")) renderAlerts();
+  if (!notifyAllowed()) return false;
+  const payload = {
+    title,
+    body: body || "",
+    tag: tag || ("hha-"+Date.now()),
+    data: { url: location.href.split("#")[0] + (itemKey ? "#pipeline" : "#alerts"), item: itemKey || null }
+  };
+  const sent = await postToSW({ type: "notify", ...payload });
+  if (sent) return true;
+  try {
+    if (swReg) {
+      await swReg.showNotification(title, {
+        body: payload.body,
+        tag: payload.tag,
+        icon: "/icon-128.png",
+        badge: "/icon-128.png",
+        renotify: true,
+        requireInteraction: true,
+        silent: false,
+        vibrate: [220, 80, 220, 80, 420],
+        data: payload.data
+      });
+      return true;
+    }
+  } catch (_) {}
+  try {
+    const n = new Notification(title, {
+      body: payload.body,
+      tag: payload.tag,
+      icon: "/icon-128.png",
+      requireInteraction: true,
+      silent: false,
+      data: payload.data
+    });
+    n.onclick = () => { window.focus(); if (itemKey) openItemByKey(itemKey); n.close(); };
+    return true;
+  } catch (e2) { return false; }
+}
+async function enableNotifications() {
+  if (!("Notification" in window)) { toast("Alerts unavailable", "This browser has no Notification API.", "alert"); return; }
+  const p = await Notification.requestPermission();
+  paintNotifyButtons();
+  if (p === "granted") {
+    await registerSW();
+    syncAlarmsToSW();
+    notifyOS("HHA Pro alarms on", "Reminders will now pop in this computer’s notification bar like an alarm.", "welcome");
+  } else toast("Alerts blocked", "Use the browser site settings to allow notifications on this computer.", "alert");
+}
+async function closedAppTest() {
+  if (!notifyAllowed()) return enableNotifications();
+  await registerSW();
+  const fireAt = Date.now() + 8000;
+  toast("Switch away or wait", "Desktop alarm in 8 seconds — it will land in your computer’s notification bar.");
+  const title = "HHA Pro alarm";
+  const body = "This is the same desktop notification path as the Maryland daily report.";
+  const tag = "closed-test-" + fireAt;
+  await postToSW({
+    type: "schedule",
+    alarm: {
+      id: tag,
+      title,
+      body,
+      tag,
+      fireAt,
+      repeat: "once",
+      data: { url: location.href.split("#")[0] + "#alerts" }
+    }
+  });
+  setTimeout(() => popOut(title, body), 8000);
+}
+function sweepReminders() {
+  const st = pipelineStats();
+  if (!seeded) {
+    seeded = true;
+    if (st.overdue || st.stale) {
+      /* first paint — no flood */
+    }
+    return;
+  }
+  if (nprefs.due) {
+    st.tasks.filter((t) => t.status !== "Resolved" && t.due && t.due <= now).forEach((t) => {
+      const tag = "due:"+t.id;
+      if (fired.has(tag)) return; fired.add(tag);
+      notifyOS("Due now", t.title, tag, "task:"+t.id);
+    });
+  }
+  if (nprefs.stale) {
+    st.cases.filter((c) => !isClosed(c.status) && c.days != null && c.days === 15).forEach((c) => {
+      const tag = "stale15:"+c.id;
+      if (fired.has(tag)) return; fired.add(tag);
+      notifyOS("Stale referral", c.name + " has had no note for 15 days.", tag, "case:"+c.id);
+    });
+  }
+  if (nprefs.brief) {
+    const [hh, mm] = String(nprefs.briefTime || "08:30").split(":").map(Number);
+    const d = new Date();
+    const stamp = d.toISOString().slice(0,10);
+    const tag = "brief:"+stamp;
+    if (!fired.has(tag) && d.getHours() === hh && d.getMinutes() >= mm && d.getMinutes() < mm + 3) {
+      fired.add(tag);
+      notifyOS("Morning briefing", `${st.screening} in Initial Screening · ${st.stale} stale · ${st.overdue} due`, tag);
+    }
+  }
+  const remChanged = [];
+  Object.values(REMINDERS).forEach((r) => {
+    if (!r || r.status === "done" || !r.at || r.at > now) return;
+    const tag = "rem:" + r.id + ":" + Math.floor(r.at / 60000);
+    if (!fired.has(tag)) {
+      fired.add(tag);
+      notifyOS(r.title, r.body || "Reminder", tag, r.itemKey || null);
+    }
+    if (r.repeat === "daily" || r.repeat === "weekly") remChanged.push(r.id);
+  });
+  if (remChanged.length) {
+    commitReminders((db) => {
+      remChanged.forEach((id) => {
+        const r = db[id]; if (!r) return;
+        const step = r.repeat === "weekly" ? 7 * 86400000 : 86400000;
+        do { r.at += step; } while (r.at <= now);
+        r.status = "open";
+      });
+    });
+  }
+  persistFired();
+}
+
+function setMode(mode) {
+  const map = { overview:"overviewPanel", pipeline:"pipelinePanel", network:"networkPanel", alerts:"alertsPanel", settings:"settingsPanel" };
+  Object.values(map).forEach((id) => document.getElementById(id).classList.remove("active"));
+  document.getElementById(map[mode] || "overviewPanel").classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach((b) => b.classList.toggle("on", b.dataset.nav === mode));
+  const titles = { overview:["Today","Overview"], pipeline:["HHA Exchange","Pipeline"], network:["Directory","Network Coverage"], alerts:["Cottage Homecare","Alerts & Reminders"], settings:["Workspace","Settings"] };
+  document.getElementById("pageKicker").textContent = titles[mode][0];
+  document.getElementById("pageTitle").textContent = titles[mode][1];
+  try { LS.api.setItem(KEY_MODE, mode); } catch (e) {}
+  if (location.hash !== "#" + mode) history.replaceState(null, "", "#" + mode);
+  document.getElementById("appShell").classList.remove("menu-open");
+  if (mode === "network") enterNetwork();
+  if (mode === "pipeline") renderPipeline();
+  if (mode === "overview") renderOverview();
+  if (mode === "alerts") renderAlerts();
+}
+
+document.querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.nav)));
+document.getElementById("btnMenu").addEventListener("click", () => document.getElementById("appShell").classList.toggle("menu-open"));
+document.getElementById("ovImport").onclick = () => document.getElementById("fileInput").click();
+function bindDrop(el) {
+  if (!el) return;
+  el.onclick = () => document.getElementById("fileInput").click();
+  ["dragenter","dragover"].forEach((ev)=>el.addEventListener(ev,(e)=>{ e.preventDefault(); el.classList.add("dragover"); }));
+  ["dragleave","drop"].forEach((ev)=>el.addEventListener(ev,(e)=>{ e.preventDefault(); el.classList.remove("dragover"); }));
+  el.addEventListener("drop", (e)=>ingestAnyFiles(e.dataTransfer.files));
+}
+bindDrop(document.getElementById("ovDrop"));
+
+function openCompose() { document.getElementById("composeSheet").classList.add("show"); document.getElementById("fTitle").focus(); }
+document.getElementById("btnQuickAdd").onclick = openCompose;
+document.getElementById("btnComposeClose").onclick = () => document.getElementById("composeSheet").classList.remove("show");
+document.getElementById("composeSheet").addEventListener("click", (e) => { if (e.target.id === "composeSheet") e.target.classList.remove("show"); });
+document.getElementById("btnAdd").addEventListener("click", addTask);
+document.getElementById("fTitle").addEventListener("keydown", (e) => { if (e.key === "Enter") addTask(); });
+document.getElementById("fState").innerHTML = `<option value="GENERAL">General</option>` + Object.keys(US).map((s)=>`<option value="${s}">${s} · ${US[s]}</option>`).join("");
+
+function openPalette() {
+  document.getElementById("palette").classList.add("show");
+  const q = document.getElementById("palQ"); q.value = ""; paintPalette(""); q.focus();
+}
+function paintPalette(q) {
+  const term = q.trim().toLowerCase();
+  const mods = [["overview","Overview"],["pipeline","Pipeline"],["network","Network"],["alerts","Alerts & Reminders"],["settings","Settings"]]
+    .filter(([,l]) => !term || l.toLowerCase().includes(term))
+    .map(([m,l]) => ({ t: l, s: "Module", run: () => setMode(m) }));
+  const acts = [
+    { t: "Log action", s: "Action", run: openCompose },
+    { t: "Set reminder", s: "Action", run: () => { setMode("alerts"); setTimeout(() => document.getElementById("rTitle").focus(), 0); } },
+    { t: "Import report", s: "Action", run: () => document.getElementById("fileInput").click() },
+    { t: "Initial Screening", s: "Filter", run: () => jumpPipeline("screen") },
+  ].filter((a) => !term || a.t.toLowerCase().includes(term));
+  const items = [
+    ...mods, ...acts,
+    ...itemList().filter((c) => !term || String(c.displayName).toLowerCase().includes(term)).slice(0, 12)
+      .map((c) => ({ t: c.displayName, s: (c.kind==="task"?"Action":"Referral")+" · "+(c.status||""), run: () => openItemByKey(c.kind+":"+c.id) }))
+  ];
+  document.getElementById("palList").innerHTML = items.map((it, i) => `<button class="w-full text-left px-3 py-2 rounded-lg pal-item" data-i="${i}"><div class="text-[14px] font-medium">${esc(it.t)}</div><div class="text-[11px]" style="color:var(--muted)">${esc(it.s)}</div></button>`).join("") || `<div class="p-3" style="color:var(--muted)">No matches</div>`;
+  window._palItems = items;
+  document.querySelectorAll(".pal-item").forEach((b) => b.onclick = () => { items[+b.dataset.i].run(); document.getElementById("palette").classList.remove("show"); });
+}
+document.getElementById("btnPalette").onclick = openPalette;
+document.getElementById("palQ").addEventListener("input", (e) => paintPalette(e.target.value));
+document.getElementById("palette").addEventListener("click", (e) => { if (e.target.id === "palette") e.target.classList.remove("show"); });
+document.getElementById("palQ").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && window._palItems && window._palItems[0]) { window._palItems[0].run(); document.getElementById("palette").classList.remove("show"); }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (document.getElementById("gate") && document.getElementById("gate").classList.contains("show")) return;
+  const meta = e.metaKey || e.ctrlKey;
+  if (meta && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); }
+  if (meta && e.key.toLowerCase() === "n") { e.preventDefault(); openCompose(); }
+  if (meta && ["1","2","3","4"].includes(e.key)) { e.preventDefault(); setMode(["overview","pipeline","network","alerts"][+e.key-1]); }
+  if (e.key === "Escape") {
+    document.getElementById("palette").classList.remove("show");
+    document.getElementById("composeSheet").classList.remove("show");
+    closeNetModals(); openItem = null; renderPipeline();
+  }
+  if (e.key === "/" && !/input|textarea|select/i.test(e.target.tagName)) { e.preventDefault(); document.getElementById("crmQ").focus(); }
+  if (!/input|textarea|select/i.test(e.target.tagName) && (e.key === "j" || e.key === "k")) {
+    const rows = visibleItems();
+    if (!rows.length) return;
+    const keys = rows.map((r) => r.kind+":"+r.id);
+    const idx = Math.max(0, keys.indexOf(openItem));
+    const next = e.key === "j" ? Math.min(keys.length-1, idx+1) : Math.max(0, idx<=0?0:idx-1);
+    openItem = keys[next]; renderPipeline();
+  }
+});
+
+function applyTheme() {
+  const pref = LS.api.getItem(KEY_THEME) || "system";
+  const dark = pref === "dark" || (pref === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#10140f" : "#efe8dc");
+}
+document.querySelectorAll("[data-theme-set]").forEach((b) => b.onclick = () => { LS.api.setItem(KEY_THEME, b.dataset.themeSet); applyTheme(); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+document.getElementById("optCollapse").checked = LS.api.getItem(KEY_SIDE) === "1";
+document.getElementById("optCollapse").onchange = (e) => {
+  document.getElementById("appShell").classList.toggle("collapsed", e.target.checked);
+  LS.api.setItem(KEY_SIDE, e.target.checked ? "1" : "0");
+};
+if (LS.api.getItem(KEY_SIDE) === "1") document.getElementById("appShell").classList.add("collapsed");
+
+document.getElementById("optNotifyDue").checked = nprefs.due !== false;
+document.getElementById("optNotifyStale").checked = nprefs.stale !== false;
+document.getElementById("optNotifyBrief").checked = nprefs.brief !== false;
+document.getElementById("optBriefTime").value = nprefs.briefTime || "08:30";
+document.getElementById("optNotifyDue").onchange = (e) => { nprefs.due = e.target.checked; savePrefs(); };
+document.getElementById("optNotifyStale").onchange = (e) => { nprefs.stale = e.target.checked; savePrefs(); };
+document.getElementById("optNotifyBrief").onchange = (e) => { nprefs.brief = e.target.checked; savePrefs(); };
+document.getElementById("optBriefTime").onchange = (e) => { nprefs.briefTime = e.target.value; savePrefs(); };
+document.getElementById("btnNotify2").onclick = enableNotifications;
+document.getElementById("btnTestNotify").onclick = () => {
+  if (!notifyAllowed()) return enableNotifications();
+  notifyOS("HHA Pro alarm", "This should appear in your computer’s notification bar, like the Maryland report reminder.", "test");
+};
+document.getElementById("btnClosedTest").onclick = closedAppTest;
+document.getElementById("btnAlertStale").onclick = alertStale;
+document.getElementById("btnAddReminder").onclick = addReminder;
+document.getElementById("rTitle").addEventListener("keydown", (e) => { if (e.key === "Enter") addReminder(); });
+document.getElementById("btnClearAlertLog").onclick = () => {
+  try { LS.api.setItem(KEY_ALERTLOG, "[]"); } catch (e) {}
+  renderAlerts();
+  toast("Alert log cleared", "");
+};
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-alert]");
+  if (!el) return;
+  const act = el.dataset.alert;
+  const id = el.dataset.id;
+  const key = el.dataset.key;
+  if (act === "open") {
+    if (key) openItemByKey(key);
+  }
+  if (act === "ping") {
+    notifyOS(el.dataset.kind || "Alert", el.dataset.title || "", "ping:" + Date.now(), key || null);
+  }
+  if (act === "snooze") snoozeReminder(id, 3600000);
+  if (act === "tomorrow") snoozeReminder(id, 86400000);
+  if (act === "done") finishReminder(id);
+  if (act === "del") { if (confirm("Remove this reminder?")) deleteReminder(id); }
+});
+
+document.getElementById("btnCrmImport").onclick = () => document.getElementById("fileInput").click();
+document.getElementById("btnCrmExport").onclick = exportPipeline;
+document.getElementById("btnCrmClear").onclick = clearPipeline;
+document.getElementById("btnPushStale").onclick = alertStale;
+document.getElementById("crmDrop").onclick = () => document.getElementById("fileInput").click();
+document.getElementById("fileInput").addEventListener("change", (e) => { ingestAnyFiles(e.target.files); e.target.value = ""; });
+["dragenter","dragover"].forEach((ev)=>document.getElementById("crmDrop").addEventListener(ev,(e)=>{ e.preventDefault(); document.getElementById("crmDrop").classList.add("dragover"); }));
+["dragleave","drop"].forEach((ev)=>document.getElementById("crmDrop").addEventListener(ev,(e)=>{ e.preventDefault(); document.getElementById("crmDrop").classList.remove("dragover"); }));
+document.getElementById("crmDrop").addEventListener("drop", (e)=>ingestAnyFiles(e.dataTransfer.files));
+document.getElementById("btnCrmMapGo").onclick = () => {
+  if (!pendingMap) return;
+  const remap = {}; document.querySelectorAll("#crmMapFields [data-map]").forEach((sel) => { if (sel.value!=="") remap[sel.dataset.map] = pendingMap.table.headers[+sel.value]; });
+  if (!remap.name) { toast("Name required", "", "alert"); return; }
+  const aliasHeaders = pendingMap.table.headers.map((h) => { const found = Object.entries(remap).find(([,name])=>name===h); return found ? found[0] : h; });
+  try { mergeCases(rowsToCases(aliasHeaders, pendingMap.table.rows, { file: pendingMap.fileName })); document.getElementById("crmMapBox").classList.add("hidden"); pendingMap=null; }
+  catch (e) { toast("Ingest failed", e.message, "alert"); }
+};
+let crmQTimer=null;
+document.getElementById("crmQ").addEventListener("input",(e)=>{ clearTimeout(crmQTimer); crmQTimer=setTimeout(()=>{ pipeFilters.q=e.target.value; renderPipeline(); },80); });
+document.getElementById("crmStatus").onchange=(e)=>{ pipeFilters.status=e.target.value; pipeFilters.kpi=null; renderPipeline(); };
+document.getElementById("crmState").onchange=(e)=>{ pipeFilters.state=e.target.value; ovState = e.target.value; renderPipeline(); };
+document.getElementById("crmIntake").onchange=(e)=>{ pipeFilters.intake=e.target.value; renderPipeline(); };
+document.getElementById("crmAge").onchange=(e)=>{ pipeFilters.age=e.target.value; renderPipeline(); };
+document.getElementById("crmKind").onchange=(e)=>{ pipeFilters.kind=e.target.value; renderPipeline(); };
+document.getElementById("crmSort").onchange=(e)=>{ pipeFilters.sort=e.target.value; renderPipeline(); };
+document.getElementById("viewRank").onclick=()=>{ pipeFilters.view="rank"; pipeFilters.sort="oldest"; document.getElementById("crmSort").value="oldest"; renderPipeline(); };
+document.getElementById("viewList").onclick=()=>{ pipeFilters.view="list"; renderPipeline(); };
+document.getElementById("viewBoard").onclick=()=>{ pipeFilters.view="board"; renderPipeline(); };
+document.getElementById("btnBulkClear").onclick=()=>{ selected.clear(); renderPipeline(); };
+document.getElementById("btnBulkDue").onclick=()=>{
+  selected.forEach((key) => {
+    const [kind, ...rest] = key.split(":"); const id = rest.join(":");
+    if (kind==="case" && CASES[id]) commitCases((db)=>{ db[id].due = Date.now(); });
+    if (kind==="task" && TASKS[id]) commitTasks((db)=>{ db[id].due = Date.now(); });
+  });
+};
+document.getElementById("bulkStatus").onchange=(e)=>{
+  const val = e.target.value; if (!val) return;
+  selected.forEach((key) => {
+    const [kind, ...rest] = key.split(":"); const id = rest.join(":");
+    if (kind==="case" && CASES[id]) commitCases((db)=>{ db[id].status = val; });
+    if (kind==="task" && TASKS[id]) commitTasks((db)=>{ db[id].status = val; });
+  });
+  e.target.value = "";
+};
+document.addEventListener("click",(e)=>{
+  const el=e.target.closest("[data-crm]"); if(!el) return;
+  const act=el.dataset.crm, id=el.dataset.id, key=el.dataset.key;
+  if (act==="kpi") { const k=el.dataset.key||null; pipeFilters.kpi = pipeFilters.kpi===k?null:k; renderPipeline(); }
+  if (act==="filterState") { pipeFilters.state = el.dataset.state; ovState = el.dataset.state; renderPipeline(); }
+  if (act==="open") { openItem=key; renderPipeline(); }
+  if (act==="sel") { if (el.checked) selected.add(key); else selected.delete(key); renderPipeline(); }
+  if (act==="close") { openItem=null; renderPipeline(); }
+  if (act==="addCaseNote") addCaseNote(id, document.getElementById("caseNoteText").value);
+  if (act==="deleteCase") { if(!confirm("Remove this case?")) return; commitCases((db)=>{ delete db[id]; }); openItem=null; }
+  if (act==="copy") { const c=CASES[id]; if(!c) return; const sum=summarizeCase(hydrateCase(c)); navigator.clipboard.writeText([`${c.name} (${c.state} · ${c.status})`, sum.headline, ...sum.bullets, "Next: "+sum.next].join("\n")).then(()=>toast("Copied","")).catch(()=>{}); }
+  if (act==="alertOne") { const c=CASES[id]; if (c) notifyOS(c.status||"Referral", c.name, "one:"+id, "case:"+id); }
+  if (act==="toggleNotes") { document.getElementById("notesFull").classList.toggle("hidden"); document.getElementById("notesCollapsed").classList.toggle("hidden"); el.textContent = document.getElementById("notesFull").classList.contains("hidden") ? "Expand" : "Collapse"; }
+  if (act==="taskStatus") commitTasks((db)=>{ if(db[id]) db[id].status=el.dataset.val; });
+  if (act==="addTaskNote") {
+    const text = (document.getElementById("taskNoteText")||{}).value || "";
+    if (!text.trim()) return;
+    commitTasks((db)=>{ if(!db[id]) return; db[id].notes={...(db[id].notes||{}), [uid()]:{ text:text.trim(), at:Date.now(), by:me.uid, byName:me.name||"anonymous" }}; });
+  }
+  if (act==="deleteTask") { if(!confirm("Delete this action?")) return; commitTasks((db)=>{ delete db[id]; }); openItem=null; }
+});
+document.addEventListener("change",(e)=>{
+  const el=e.target.closest("[data-crm]"); if(!el) return;
+  if (el.dataset.crm==="state" && CASES[el.dataset.id]) commitCases((db)=>{ db[el.dataset.id].state=el.value; });
+  if (el.dataset.crm==="intakeField" && CASES[el.dataset.id]) commitCases((db)=>{ db[el.dataset.id].intake=el.value.trim(); });
+  if (el.dataset.crm==="statusField" && CASES[el.dataset.id]) commitCases((db)=>{ db[el.dataset.id].status=el.value.trim(); });
+  if (el.dataset.crm==="dueField" && CASES[el.dataset.id]) commitCases((db)=>{ db[el.dataset.id].due=el.value?new Date(el.value).getTime():null; });
+  if (el.dataset.crm==="taskField" && TASKS[el.dataset.id]) commitTasks((db)=>{ db[el.dataset.id][el.dataset.field]=el.value; });
+  if (el.dataset.crm==="taskDue" && TASKS[el.dataset.id]) commitTasks((db)=>{ db[el.dataset.id].due=el.value?new Date(el.value).getTime():null; });
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.target.id === "caseNoteText" && openItem && openItem.startsWith("case:")) {
+    addCaseNote(openItem.slice(5), e.target.value);
+  }
+});
+
+function initialsOf(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "H";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+function paintIdentity() {
+  const name = (me.name || "").trim();
+  const mark = document.getElementById("idMark");
+  const label = document.getElementById("idName");
+  if (mark) mark.textContent = initialsOf(name);
+  if (label) label.textContent = name || "Guest";
+  const setName = document.getElementById("setName");
+  if (setName && document.activeElement !== setName) setName.value = name;
+}
+function commitIdentity(name) {
+  me.name = String(name || "").trim();
+  try { LS.api.setItem(KEY_NAME, me.name); } catch (e) {}
+  paintIdentity();
+  beat();
+  renderOverview();
+}
+function showGate() {
+  const gate = document.getElementById("gate");
+  if (!gate) return;
+  gate.classList.add("show");
+  const inp = document.getElementById("gateName");
+  if (inp) {
+    inp.value = me.name || "";
+    setTimeout(() => inp.focus(), 40);
+  }
+}
+function hideGate() {
+  const gate = document.getElementById("gate");
+  if (gate) gate.classList.remove("show");
+}
+function acceptGate() {
+  const inp = document.getElementById("gateName");
+  const err = document.getElementById("gateError");
+  const name = (inp && inp.value || "").trim();
+  if (!name) {
+    if (err) err.classList.remove("hidden");
+    if (inp) inp.focus();
+    return;
+  }
+  if (err) err.classList.add("hidden");
+  commitIdentity(name);
+  hideGate();
+  toast("Welcome", name.split(" ")[0]);
+}
+document.getElementById("btnGateEnter").onclick = acceptGate;
+document.getElementById("gateName").addEventListener("keydown", (e) => { if (e.key === "Enter") acceptGate(); });
+document.getElementById("gateName").addEventListener("input", () => {
+  const err = document.getElementById("gateError");
+  if (err) err.classList.add("hidden");
+});
+document.getElementById("btnSaveName").onclick = () => {
+  const name = (document.getElementById("setName").value || "").trim();
+  if (!name) { toast("Needs a name", "The top bar uses this on every note.", "alert"); return; }
+  commitIdentity(name);
+  toast("Name saved", name);
+};
+
+const beat = () => { try { LS.api.setItem(TAB_ID, JSON.stringify({ name: me.name || "anonymous", at: Date.now() })); } catch (e) {} };
+function countTabs() {
+  if (!LS.ok) return 1; let n = 0; const stale = [];
+  for (let i = 0; i < LS.api.length; i++) {
+    const k = LS.api.key(i); if (!k || !k.startsWith(KEY_TAB)) continue;
+    let at = 0; try { at = JSON.parse(LS.api.getItem(k)).at || 0; } catch (e) {}
+    if (now - at < 15000) n++; else stale.push(k);
+  }
+  stale.forEach((k) => LS.api.removeItem(k)); return Math.max(1, n);
+}
+function paintStatus() {
+  const n = countTabs();
+  document.getElementById("presence").textContent = n + (n===1?" tab":" tabs");
+  document.getElementById("connDot").style.background = LS.ok ? "#30d158" : "#ff9f0a";
+  document.getElementById("connText").textContent = LS.ok ? "Saved locally" : "Session only";
+}
+window.addEventListener("storage", (e) => {
+  if (e.key === KEY_TASKS) TASKS = loadJSON(KEY_TASKS, {});
+  if (e.key === KEY_CASES) CASES = loadJSON(KEY_CASES, {});
+  if (e.key === KEY_REMINDERS) { REMINDERS = loadJSON(KEY_REMINDERS, {}); if (!REMINDERS || Array.isArray(REMINDERS)) REMINDERS = {}; }
+  if (e.key === KEY_TASKS || e.key === KEY_CASES || e.key === KEY_REMINDERS || e.key === KEY_ALERTLOG) renderAll();
+  if (e.key && e.key.startsWith(KEY_TAB)) paintStatus();
+});
+window.addEventListener("beforeunload", () => { try { LS.api.removeItem(TAB_ID); } catch (e) {} });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { now = Date.now(); sweepReminders(); renderAll(); } });
+
+/* Network */
+const NET_AUTH = { user: "intake@cottagehomecare.com", pass: "intake@12345" };
+const NET_API = "https://api.cottagehome.care/all-states-name";
+const NET_KEY = "cottageadminmrdev";
+const KEY_NET_AUTH = "hha:net-auth";
+let stateData = [], editingId = null, viewingId = null;
+const netFilters = { q: "", region: "all" };
+function isNetAuthed() { try { return LS.api.getItem(KEY_NET_AUTH) === "authenticated"; } catch (e) { return false; } }
+function enterNetwork() {
+  if (isNetAuthed()) unlockNetwork();
+  else { document.getElementById("authOverlay").style.display = "block"; document.getElementById("networkMain").classList.add("hidden"); document.getElementById("loginEmail").focus(); }
+}
+function unlockNetwork() { document.getElementById("authOverlay").style.display = "none"; document.getElementById("networkMain").classList.remove("hidden"); fetchStates(); }
+function validateNetworkLogin() {
+  const email = document.getElementById("loginEmail").value.trim(); const pass = document.getElementById("loginPass").value;
+  if (email === NET_AUTH.user && pass === NET_AUTH.pass) {
+    try { LS.api.setItem(KEY_NET_AUTH, "authenticated"); } catch (e) {}
+    document.getElementById("loginError").classList.add("hidden"); unlockNetwork(); toast("Verified", "Directory is live.");
+  } else document.getElementById("loginError").classList.remove("hidden");
+}
+function networkLogout() { try { LS.api.removeItem(KEY_NET_AUTH); } catch (e) {} stateData = []; document.getElementById("stateGrid").innerHTML = ""; enterNetwork(); }
+async function fetchStates() {
+  const loader = document.getElementById("stateLoader"); loader.classList.remove("hidden"); loader.textContent = "Retrieving directory…";
+  try {
+    const res = await fetch(NET_API, { headers: { "X-API-Key": NET_KEY } }); if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json(); stateData = Array.isArray(data) ? data : []; fillRegionFilter(); renderStates();
+  } catch (e) { loader.textContent = "Could not load — " + e.message; toast("Network error", e.message, "alert"); }
+}
+function fillRegionFilter() {
+  const sel = document.getElementById("regionFilter"); const current = netFilters.region;
+  const regions = [...new Set(stateData.map((s)=>(s.region||"").trim()).filter(Boolean))].sort();
+  sel.innerHTML = `<option value="all">All regions</option>` + regions.map((r)=>`<option value="${esc(r)}">${esc(r)}</option>`).join("");
+  sel.value = regions.includes(current) ? current : "all"; netFilters.region = sel.value;
+}
+function visibleStates() {
+  const term = netFilters.q.trim().toLowerCase();
+  return stateData.filter((s) => {
+    if (netFilters.region !== "all" && (s.region||"") !== netFilters.region) return false;
+    if (!term) return true;
+    return [s.name,s.region,s.Agency_NAME,s.NPI,s.phone,s.email,s.address,s.Tax_ID,s.provider_id].map((v)=>String(v||"")).join(" ").toLowerCase().includes(term);
+  }).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+}
+function codeFromName(name="") { const m = String(name).match(/\(([A-Z]{2})\)/); if (m && US[m[1]]) return m[1]; return stateFromText(name) || "GENERAL"; }
+function renderStates() {
+  const rows = visibleStates();
+  document.getElementById("stateLoader").classList.toggle("hidden", stateData.length > 0);
+  if (!stateData.length) return;
+  document.getElementById("stateCount").textContent = `${rows.length} shown · ${stateData.length}`;
+  const grid = document.getElementById("stateGrid");
+  if (!rows.length) { grid.innerHTML = `<div class="panel py-14 text-center" style="grid-column:1/-1;color:var(--muted)">No states match</div>`; return; }
+  grid.innerHTML = rows.map((s) => {
+    const initials = (s.name||"??").split(/\s+/).map((w)=>w[0]).join("").toUpperCase().slice(0,2);
+    const img = s.img ? `style="background-image:url('${esc(s.img)}')"` : "";
+    return `<div class="state-card" data-net="view" data-id="${esc(s._id)}">
+      <div class="cover" ${img}></div>
+      <button class="edit-btn" data-net="edit" data-id="${esc(s._id)}">✎</button>
+      <div class="relative z-[1]"><div class="text-[16px] font-semibold pr-8">${esc(s.name||"Unnamed")}</div>
+      <div class="eyebrow mt-1">${esc(s.region||"Territory")}</div>
+      <div class="text-[12px] mt-2 clip" style="color:var(--muted)">${esc(s.Agency_NAME||"No agency")}</div></div>
+      <div class="state-initials">${esc(initials)}</div></div>`;
+  }).join("");
+}
+function hasVal(v) { return v != null && String(v).trim() !== "" && String(v).trim() !== "---"; }
+function openViewModal(id) {
+  const s = stateData.find((x)=>x._id===id); if (!s) return; viewingId = id;
+  const content = document.getElementById("viewModalContent");
+  content.style.backgroundImage = s.img ? `linear-gradient(rgba(255,255,255,.92),rgba(255,255,255,.96)),url('${esc(s.img)}')` : "none";
+  document.getElementById("viewTitle").textContent = s.name || "Untitled";
+  document.getElementById("viewRegion").textContent = s.region || "Territory";
+  const fields = [["Agency",s.Agency_NAME],["Address",s.address],["NPI",s.NPI],["Tax ID",s.Tax_ID],["Medicaid ID",s.medicaid_id],["Provider ID",s.provider_id],["Vendor ID",s.vendor_id],["Lara ID",s.lara_id],["Phone",s.phone],["Fax",s.fax],["Email",s.email],["Pay rate",s.pay_rate]];
+  document.getElementById("viewInfo").innerHTML = fields.filter(([,v])=>hasVal(v)).map(([l,v])=>`<div><div class="eyebrow">${esc(l)}</div><div class="text-[14px] mt-0.5">${esc(v)}</div></div>`).join("") || `<div style="color:var(--muted)">No identifiers.</div>`;
+  document.getElementById("viewModal").classList.add("show");
+}
+function fillForm(s) {
+  const set = (id,v) => document.getElementById(id).value = v || "";
+  set("in-name", s&&s.name); set("in-region", s&&s.region); set("in-agency", s&&s.Agency_NAME); set("in-address", s&&s.address);
+  set("in-npi", s&&s.NPI); set("in-tax", s&&s.Tax_ID); set("in-medicaid", s&&s.medicaid_id); set("in-provider", s&&s.provider_id);
+  set("in-vendor", s&&s.vendor_id); set("in-lara", s&&s.lara_id); set("in-phone", s&&s.phone); set("in-fax", s&&s.fax);
+  set("in-email", s&&s.email); set("in-payrate", s&&s.pay_rate); set("in-img", s&&s.img);
+  document.getElementById("imgHint").textContent = (s&&s.img) ? "Image attached" : "No image";
+}
+function openEditModal(id) { editingId = id; fillForm(stateData.find((x)=>x._id===id)); document.querySelectorAll(".field-error").forEach((e)=>e.remove()); document.getElementById("formTitle").textContent = "Edit record"; document.getElementById("btnDeleteState").style.display = "inline-block"; closeNetModals(); document.getElementById("formModal").classList.add("show"); }
+function openAddModal() { editingId = null; fillForm(null); document.getElementById("formTitle").textContent = "Add state"; document.getElementById("btnDeleteState").style.display = "none"; document.getElementById("formModal").classList.add("show"); }
+function closeNetModals() { document.getElementById("viewModal").classList.remove("show"); document.getElementById("formModal").classList.remove("show"); }
+function handleImageUpload() {
+  if (!window.cloudinary) { toast("Uploader unavailable", "", "alert"); return; }
+  cloudinary.openUploadWidget({ cloudName: "dlw7u1u5p", uploadPreset: "cottage_new_api" }, (err, res) => {
+    if (!err && res && res.event === "success") { document.getElementById("in-img").value = res.info.secure_url; document.getElementById("imgHint").textContent = "Image attached"; }
+  });
+}
+const FIELD_RULES = { "in-name":{label:"State name",required:true}, "in-region":{label:"Region",required:true}, "in-email":{label:"Email",pattern:/^[^\s@]+@[^\s@]+\.[^\s@]+$/,msg:"Valid email required"}, "in-phone":{label:"Phone",pattern:/^[\d\s().+-]{7,}$/,msg:"Valid phone required"}, "in-fax":{label:"Fax",pattern:/^[\d\s().+-]{7,}$/,msg:"Valid fax required"}, "in-npi":{label:"NPI",pattern:/^\d{10}$/,msg:"NPI must be 10 digits"}, "in-tax":{label:"Tax ID",pattern:/^\d{2}-?\d{7}$/,msg:"EIN format 12-3456789"} };
+function validateStateForm() {
+  document.querySelectorAll(".field-error").forEach((e)=>e.remove());
+  let first = null;
+  for (const [id, rule] of Object.entries(FIELD_RULES)) {
+    const val = document.getElementById(id).value.trim();
+    if (rule.required && !val) { const err=document.createElement("div"); err.className="field-error"; err.textContent=rule.label+" is required"; document.getElementById(id).parentElement.appendChild(err); first=first||id; }
+    else if (val && rule.pattern && !rule.pattern.test(val)) { const err=document.createElement("div"); err.className="field-error"; err.textContent=rule.msg; document.getElementById(id).parentElement.appendChild(err); first=first||id; }
+  }
+  return !first;
+}
+async function handleSaveState() {
+  if (!validateStateForm()) return;
+  const val = (id) => document.getElementById(id).value.trim();
+  const payload = { name:val("in-name"), region:val("in-region"), Agency_NAME:val("in-agency"), address:val("in-address"), NPI:val("in-npi"), Tax_ID:val("in-tax"), medicaid_id:val("in-medicaid"), provider_id:val("in-provider"), vendor_id:val("in-vendor"), lara_id:val("in-lara"), phone:val("in-phone"), fax:val("in-fax"), email:val("in-email"), pay_rate:val("in-payrate"), img:val("in-img") };
+  try {
+    const res = await fetch(editingId ? `${NET_API}/${editingId}` : NET_API, { method: editingId?"PUT":"POST", headers:{ "Content-Type":"application/json", "X-API-Key": NET_KEY }, body: JSON.stringify(payload) });
+    if (!res.ok) { const err = await res.json().catch(()=>({})); toast("Save failed", err.message || ("HTTP "+res.status), "alert"); return; }
+    closeNetModals(); toast(editingId?"Updated":"Added", payload.name); await fetchStates();
+  } catch (e) { toast("Network error", e.message, "alert"); }
+}
+async function handleDeleteState() {
+  if (!editingId || !confirm("Delete this state record?")) return;
+  try {
+    const res = await fetch(`${NET_API}/${editingId}`, { method:"DELETE", headers:{ "X-API-Key": NET_KEY } });
+    if (!res.ok) { const err = await res.json().catch(()=>({})); toast("Delete failed", err.message||"", "alert"); return; }
+    closeNetModals(); toast("Removed", ""); await fetchStates();
+  } catch (e) { toast("Network error", e.message, "alert"); }
+}
+function pushStateFollowup() {
+  const s = stateData.find((x)=>x._id===viewingId); if (!s) return;
+  const bits = [s.Agency_NAME, s.phone, s.email, s.NPI && ("NPI "+s.NPI), s.address].filter(hasVal);
+  const task = { title:`Follow-up · ${s.name||"State"}`, assignee:"", patient:s.Agency_NAME||"", state:codeFromName(s.name), priority:"auto", due:null, status:"Open", source:"Network Coverage", ref:s.NPI||s.provider_id||"", createdAt:Date.now(), createdBy:me.uid, createdByName:me.name||"anonymous", updatedAt:Date.now() };
+  if (bits.length) task.notes = { [uid()]: { text: bits.join(" · "), at: Date.now(), by: me.uid, byName: me.name||"anonymous" } };
+  const id = uid();
+  commitTasks((db)=>{ db[id] = task; }, ["Action created", s.name]); closeNetModals(); openItem = "task:"+id; setMode("pipeline");
+}
+document.getElementById("btnLogin").onclick = validateNetworkLogin;
+document.getElementById("loginPass").addEventListener("keydown", (e)=>{ if (e.key==="Enter") validateNetworkLogin(); });
+document.getElementById("btnNetLogout").onclick = networkLogout;
+document.getElementById("btnRefreshStates").onclick = fetchStates;
+document.getElementById("btnAddState").onclick = openAddModal;
+document.getElementById("btnSaveState").onclick = handleSaveState;
+document.getElementById("btnDeleteState").onclick = handleDeleteState;
+document.getElementById("btnUploadImg").onclick = handleImageUpload;
+document.getElementById("btnViewEdit").onclick = () => { if (viewingId) openEditModal(viewingId); };
+document.getElementById("btnPushFollowup").onclick = pushStateFollowup;
+document.getElementById("regionFilter").onchange = (e) => { netFilters.region = e.target.value; renderStates(); };
+let stateQTimer = null;
+document.getElementById("stateQ").addEventListener("input", (e) => { clearTimeout(stateQTimer); stateQTimer = setTimeout(()=>{ netFilters.q = e.target.value; renderStates(); }, 80); });
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-net]");
+  if (!el) { if (e.target.id==="viewModal" || e.target.id==="formModal") closeNetModals(); return; }
+  if (el.dataset.net === "view") openViewModal(el.dataset.id);
+  if (el.dataset.net === "edit") { e.stopPropagation(); openEditModal(el.dataset.id); }
+  if (el.dataset.net === "closeModals") closeNetModals();
+});
+
+applyTheme();
+paintIdentity();
+beat(); paintStatus();
+registerSW();
+const start = (location.hash||"").replace("#","") || LS.api.getItem(KEY_MODE) || "overview";
+setMode(["overview","pipeline","network","alerts","settings"].includes(start) ? start : "overview");
+renderAll();
+sweepReminders();
+if (!(me.name || "").trim()) showGate();
+setInterval(() => {
+  now = Date.now(); beat(); paintStatus(); sweepReminders();
+  postToSW({ type: "ping" });
+  const active = document.activeElement;
+  if (active && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName)) return;
+  if (document.getElementById("pipelinePanel").classList.contains("active")) renderPipeline();
+  else if (document.getElementById("overviewPanel").classList.contains("active")) renderOverview();
+  else if (document.getElementById("alertsPanel").classList.contains("active")) renderAlerts();
+}, 15000);
+if (!LS.ok) toast("Storage unavailable", "Work will vanish on reload.", "alert");
+</script>
+</body>
+</html>
