@@ -1,14 +1,18 @@
 # HHA Pro · Cottage Homecare
 
-Portal with **desktop alarm notifications** (same idea as the Maryland HHAeXchange Chrome extension: the reminder pops in the computer notification bar).
+Intake desk for Cottage Homecare: pipeline, alarms, network directory, and JARVIS.
 
 ## Download
 
-Use the latest zip from **Releases**, or:
+**Unzip and run (recommended)**
+
+https://github.com/bandhu-netizen/hha-pro-portal/releases/download/v2.0.0/hha-pro-portal.zip
+
+Or grab the whole repo:
 
 https://github.com/bandhu-netizen/hha-pro-portal/archive/refs/heads/main.zip
 
-## Run
+## Run the portal
 
 Keep `hha-pro.html`, `sw.js`, and `icon-128.png` in the same folder.
 
@@ -18,7 +22,7 @@ Desktop alarms need a real web origin (not a double-clicked file). From that fol
 npx --yes serve -p 4173
 ```
 
-Open the page Chrome shows, then:
+Open the page it prints, then:
 
 1. Enter your name
 2. Open **Alerts**
@@ -31,6 +35,11 @@ Keep Chrome open (even in the background) so reminders can fire.
 
 | File | Role |
 |---|---|
-| `hha-pro.html` | Portal |
+| `hha-pro.html` | Portal you open in Chrome |
 | `sw.js` | Background worker that writes OS notifications |
 | `icon-128.png` | Notification icon |
+| `app/` | Latest HHA Pro source (pipeline, JARVIS, alarms) |
+
+## v2.0.0
+
+Adds the current HHA Pro source snapshot (`app/`) next to the unzip-and-run portal.
